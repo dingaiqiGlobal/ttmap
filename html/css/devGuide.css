@@ -1,0 +1,86 @@
+body{
+    background-color: #fff;
+}
+.main {
+    height: 100%;
+    width: 100%;
+}
+.left{
+    width: 85%;
+}
+.menu{
+    position: fixed;
+    top:30px;
+    right:18%;
+    height: 153px;
+}
+.menuBox{
+display: flex;
+height: 100%;
+}
+.menuLine{
+position: relative;
+height: 100%;
+padding:17px 0 33px 0;
+left: -15px;
+}
+.navLine{
+height:100%;
+width: 3px;
+background: #E5E5E5;
+}
+.navCircle{
+width: 20px;
+height: 20px;
+background: #FFFFFF;
+border: 4px solid #1890FF;
+border-radius: 100%;
+position: absolute;
+top: 12px;
+left: -26px;
+display: none;
+}
+.circleActive{
+    display: inline-block;
+}
+.nav-text {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.85);
+    line-height: 24px;
+}
+/* 滚动条样式 */
+::-webkit-scrollbar {
+    width: 0px;
+  }
+
+#section3{
+    margin-bottom: 60px;
+}  
+hr {
+    width: 100%;
+    height: 1px;
+    background: #e9e9e9;
+    margin: 12px 0;
+}
+.title1{
+    font-size: 16px;
+    font-weight: bold;
+    color: rgba(0, 0, 0, 0.85);
+    line-height: 24px;
+}
+.title2{
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.85);
+    line-height: 24px;
+}
+.text1{
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.65);
+    line-height: 28px;
+}
+.section {
+    margin-top: 36px;
+  }

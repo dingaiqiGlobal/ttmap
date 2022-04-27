@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="TTMapV0.0.1ApidocApp">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Getting Started</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/main.css" />
+    <script
+      type="text/javascript"
+      src="../demo/examples/js/jquery.min.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../demo/examples/js/bootstrap.min.js"
+    ></script>
+  </head>
+  <body>
+    <!-- header -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="row" style="position:relative;height: 100%;">
+          <div class="navbar-header">
+            <a class="navbar-brand" ui-sref="app" href="javascript:;">
+              <img class="logo" src="images/logo.png" alt="" />
+              &nbsp;&nbsp;脑库地图
+            </a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="javascript:;"> 首页</a></li>
+              <li><a href="javascript:;"> 产品介绍</a></li>
+              <li><a href="javascript:;"> 开发指南</a></li>
+              <li><a href="javascript:;"> 开发示例</a></li>
+              <li><a href="javascript:;"> 开发API</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- content -->
+    <div class="content">
+      <iframe src="homePage.html" id="iframe"></iframe>
+    </div>
+  </body>
+  <script>
+    var navs = [
+      "homePage.html",
+      "products.html",
+      "devGuide.html",
+      "../demo/examples/examples.html",
+      "../doc/index.html",
+    ];
+    //导航栏点击时颜色以及页面的切换
+    $(function () {
+      $(".navbar-nav>li").click(function () {
+        var _this = this;
+        // 导航栏颜色变化
+        $(".navbar-nav>li").removeClass("active");
+        $(_this).addClass("active");
+        //判断iframe是否加载完成
+        const iframe = document.querySelector("#iframe");
+        if (iframe.attachEvent) {
+          iframe.attachEvent("onload", function () {
+            // iframe加载完毕以后执行操作
+            console.log("iframe已加载完毕");
+            _this.iframeloading = false;
+          });
+        } else {
+          iframe.onload = function () {
+            // iframe加载完毕以后执行操作
+            console.log("iframe已加载完毕");
+            _this.iframeloading = false;
+          };
+        }
+        //切换页面
+        $("#iframe").css("display", "none");
+        $("#iframe").fadeIn("30000");
+        var index = $(_this).index();
+        $(".content").children().attr("src", navs[index]);
+		//获取当前页面宽度和不同媒体查询宽度范围下的container的宽度
+		var viewportWidth = $(window).width();
+        var containerWidth;
+		if(viewportWidth >= 768 && viewportWidth < 992){
+			containerWidth = "750px";
+		}else if(viewportWidth >= 992 && viewportWidth < 1200){
+			containerWidth = "970px";
+		}else if(viewportWidth > 1200){
+			containerWidth = "1170px";
+		}
+		if(index == 3){
+            $(".navbar-inverse .container")[0].style.width = "100%";
+			$(".navbar-inverse .container")[0].style.padding = "0 36px";		
+		}else{
+			$(".navbar-inverse .container")[0].style.width = containerWidth;
+			$(".navbar-inverse .container")[0].style.padding = "0 15px";
+		}
+      });
+    });
+  </script>
+</html>

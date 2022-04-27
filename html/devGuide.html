@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>开发指南</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/footer.css" />
+    <link rel="stylesheet" type="text/css" href="css/devGuide.css" />
+    <script type="text/javascript" src="../demo/examples/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../demo/examples/js/bootstrap.min.js"></script>
+</head>
+<body data-spy="scroll" data-target=".menu" data-offset="30">
+    <div class="main">
+        <div class="container">
+            <div class="left">
+                <!-- 第一项: 部署 -->
+                <div class="section" id="section1">
+                    <div class="start-up-header">
+                        <p class="title1">部署</p>
+                    </div>
+                    <hr/>
+                    <p class="start-up-content" class="text1">
+                        检查你的脚本文件，确保TTMapV0.0.1包中至少包含以下两个文件：
+                        <ul>
+                            <li>TTMap.js</li>
+                            <li>TTMap.min.css</li>
+                        </ul>
+                    </p>
+                    <p class="start-up-content text1">
+                        通过服务器发布上述三个静态资源，以至于能够在前端调用他们。你可以使用你熟悉的发布方式: TOMCAT, NODEJS, WebLogic ...
+                    </p>
+                    <p class="start-up-content text1">
+                        发布成功以后，可以在前端页面中通过脚本引用的方式，把脚本引入到项目中。
+                    </p>
+                    <div class="start-up-code">
+                        <p class="title2">HTML</p>
+                        <pre>
+                            <code>
+    &lt;!-- 注意加载顺序，文件编码格式为 "utf-8" --&gt;
+    &lt;link rel="stylesheet" type="text/css" href="http://{yourip}:{port}/{path}/TTMap.min.css"&gt;
+    &lt;script src="http://{yourip}:{port}/{path}/TTMap.js"&gt;&lt;/script&gt;
+                            </code>
+                        </pre>
+                    </div>
+                    <p class="start-up-content text1">
+                        现在可以使用TTMapV0.0.1的API进行Web地图开发...
+                    </p>
+                </div>
+
+                <!-- 第二项：新建simple地图 -->
+                <div class="section" id="section2">
+                    <div class="start-up-header">
+                        <p class="title1">新建一张simple地图</p>
+                    </div>
+                    <hr/>
+                    <p class="start-up-content text1">
+                        如下方式新建simple地图:
+                    </p>
+                    <div class="start-up-code">
+                        <P class="title2">HTML</P>
+                        <pre>
+                            <code>
+    &lt;!-- 提供地图容器，其中地图容器必须提供id号，用于生成地图 --&gt;
+    &lt;div id="map" style="width:1300px;height:600px;"&gt;&lt;/div&gt;
+                                                </code>
+                        </pre>
+                    </div>
+                    <br/>
+                    <div class="start-up-code">
+                        <p class="title2">Javascript</p>
+                        <pre>
+                            <code>
+    /**
+    * 这里的map为上文HTML中新建的地图容器ID号；
+    * 下面一行代码便可以加载地图到browser上
+    */  
+    var map = new TTMap("map");
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+
+                <!-- 第三项：完整的simple地图 -->
+                <div class="section" id="section3">
+                    <div class="start-up-header">
+                        <p class="title1">完整的HTML代码</p>
+                    </div>
+                    <hr/>
+                    <div class="start-up-code">
+                        <p class="title2">HTML</p>
+                        <pre>
+                            <code>
+    &lt;!DOCTYPE html&gt;
+    &lt;html lang="en"&gt;
+    &lt;head&gt;
+        &lt;meta charset="UTF-8"&gt;
+        &lt;title&gt;Simple Map Demo&lt;/title&gt;
+        &lt;link rel="stylesheet" type="text/css" href="http://{yourip}:{port}/{path}/TTMap.min.css"&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;div id="map" style="width: 1300px;height: 600px"&gt;&lt;/div&gt;
+    
+        &lt;script type="text/javascript" src="http://{yourip}:{port}/{path}/TTMap.js"&gt;&lt;/script&gt;
+        &lt;!-- 外部js或者内嵌js --&gt;
+        &lt;script type="text/javascript"&gt;
+            var map = new TTMap('map');
+        &lt;/script&gt;
+    &lt;/body&gt;
+    &lt;/html&gt;
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+            </div>
+        </div>         
+        <div class="footer"></div>    
+    </div>
+    <nav class="menu" id="myScrollspy" class="collapse navbar-brand navbar-collapse bs-js-navbar-scrollspy" role="navigation">
+        <div class="menuBox">
+            <div class="menuLine">
+              <div class="navLine"></div>
+            </div>
+            <ul class="nav nav-stacked">
+              <li class="active"><div class="navCircle circleActive"></div><a class="nav-text" href="#section1">部署</a></li>
+              <li><div class="navCircle"></div><a class="nav-text" href="#section2">新建一张simple地图</a></li>
+              <li><div class="navCircle"></div><a class="nav-text" href="#section3">完整的HTML代码</a></li>
+            </ul>
+        </div>  
+    </nav>
+    <script>
+      $(".footer").load("footer.html");
+    </script>
+</body>
+<script type="text/javascript">
+    $(window).on('activate.bs.scrollspy', function (e) {
+      $("#myScrollspy .menuBox .nav li .navCircle").removeClass("circleActive");
+      $("#myScrollspy .menuBox .nav li.active .navCircle").addClass("circleActive");
+    });
+</script>
+</html>

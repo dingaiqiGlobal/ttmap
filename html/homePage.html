@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>首页</title>
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="css/homePage.css" />
+    <link rel="stylesheet" type="text/css" href="css/footer.css" />
+
+    <script type="text/javascript" src="../demo/examples/js/jquery.min.js"></script>
+    <script type="text/javascript" src="../demo/examples/js/bootstrap.min.js"></script>
+  </head>
+  <body onload="setHeight()">
+    <div class="part1">
+      <div class="container">
+        <p class="text1">脑库地图</p>
+        <p class="text2">三维开发平台</p>
+        <p class="text3">方便、快捷、可拓展</p>
+        <div class="btnGroup">
+          <button type="button" class="btn btn-default downloadBtn">
+            下载
+          </button>
+          <button type="button" class="btn btn-default exampleBtn">示例</button>
+        </div>
+      </div>
+    </div>
+    <div class="part2">
+      <div class="container">
+        <div class="intro">
+            <p class="introText1">TTMap&nbsp;iClient&nbsp;3D&nbsp;for&nbsp;WebGL-脑库地图三维开发平台</p>
+            <p class="introText2">TTMap&nbsp;iClient&nbsp;3D&nbsp;for&nbsp;WebGL-脑库地图三维开发平台是一款基于开源三维地图框架Cesium开发的跨浏览器端二次开发产品，<br />零插件、简单、易开发、易拓展，<br />用户可以通过该产品轻松构建功能强大的城市、城市群级别的全空间真三维Web应用。</p>
+        </div>
+        <div class="module">
+            <p class="moduleTitle1">核心能力</p>
+            <p class="moduleTitle2">CORE COMPETENCE</p>
+            <div class="moduleGroup">
+                <div class="modulePart1">
+                    <div class="imageDiv"><img class="image" src="images/homepage/visual.png" alt="" /></div>
+                    <p class="moduleText">三维可视化呈现</p>
+                </div>
+                <div class="modulePart2">
+                    <div class="imageDiv"><img class="image" src="images/homepage/effects.png" alt="" /></div>
+                    <p class="moduleText">空间场景特效</p>
+                </div>
+                <div class="modulePart3">
+                    <div class="imageDiv"><img class="image" src="images/homepage/analysis.png" alt="" /></div>
+                    <p class="moduleText">空间专业分析</p>
+                </div>
+            </div>
+        </div>
+        <div class="detail">
+            <div class="detailPart">
+                <div class="detailImg">
+                    <img class="image" src="images/homepage/image1.png" alt="" />
+                </div>
+                <div class="detailContent">
+                    <p class="detailText1">全面提升三维可视化能力</p>
+                    <p class="detailText2">支持各类栅矢、地形、模型、物感实时数据等全时空数据一体化展示<br /><br />全面、高效支持多类型、多格式的三维数据与功能</p>
+                </div>
+            </div>
+            <div class="detailPart">
+                <div class="detailImg">
+                    <img class="image" src="images/homepage/image2.png" alt="" />
+                </div>
+                <div class="detailContent">
+                    <p class="detailText1">增强全空间场景特效表达</p>
+                    <p class="detailText2">增强栗子特想，实现逼真的雨雪雾、火焰、水面等动态动画效果<br /><br />多样化三维特效，支持行人漫游、动态围墙、动态圆、雷达扫描圆等特效，以及泛光、景深、扫描等处理后特效</p>
+                </div>
+            </div>
+            <div class="detailPart">
+                <div class="detailImg">
+                    <img class="image" src="images/homepage/image3.png" alt="" />
+                </div>
+                <div class="detailContent">
+                    <p class="detailText1">提供全空间专业分析与处理</p>
+                    <p class="detailText2">全空间数据操作交互，支持二三维要素与数据的多样化查询、编辑、增强单体化功能<br /><br />全空间多维度量算，支持距离量算、面积量算、高度量算等功能</p>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer"></div>
+    <script>
+      $(".footer").load("footer.html");
+    </script>
+  </body>
+  <script>
+    function setHeight() {
+      parent.document.getElementById("iframe").height = 0;
+      parent.document.getElementById("iframe").height = document.body.scrollHeight;
+    }
+  </script>
+</html>

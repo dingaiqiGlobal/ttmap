@@ -1,0 +1,97 @@
+.main {
+  height: 100%;
+}
+.menu{
+  position: fixed;
+  top:85px;
+  left:calc(100% - 500px);
+  height: 245px;
+}
+.menuBox{
+  display: flex;
+  height: 100%;
+}
+.menuLine{
+  position: relative;
+  height: 100%;
+  padding:17px 0 33px 0;
+  left: -15px;
+}
+.navLine{
+  height:100%;
+  width: 3px;
+  background: #E5E5E5;
+}
+.navCircle{
+  width: 20px;
+  height: 20px;
+  background: #FFFFFF;
+  border: 4px solid #1890FF;
+  border-radius: 100%;
+  position: absolute;
+  top: 12px;
+  left: -26px;
+  display: none;
+}
+.left{
+  width: 85%;
+}
+hr {
+  width: 100%;
+  height: 1px;
+  background: #e9e9e9;
+  margin: 12px 0;
+}
+.section {
+  margin-top: 36px;
+}
+.title1 {
+  font-size: 20px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 28px;
+  margin-top: 30px;
+}
+.title2 {
+  font-size: 16px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 24px;
+}
+.text1 {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 28px;
+}
+.text2 {
+  font-size: 14px;
+  font-weight: 400;
+  color: #1890ff;
+  line-height: 28px;
+}
+.text3 {
+  font-size: 14px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.65);
+  line-height: 28px;
+}
+.part2 {
+  margin-top: 12px;
+}
+.nav-text {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 24px;
+}
+#section5{
+  margin-bottom: 60px;
+}
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 0px;
+}
+.circleActive{
+  display: inline-block;
+}

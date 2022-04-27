@@ -1,0 +1,132 @@
+html {
+  width: 100%;
+  height: 100%;
+}
+body {
+  height: 100%;
+}
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 0px;
+}
+.part1 {
+  background-image: url("../images/homepage/banner.png");
+  height: 620px;
+  border: 1px dashed #777;
+  padding-top: 8%;
+  background-size: 100% 100%;
+}
+.part1 .container .text1 {
+  font-size: 50px;
+  font-family: AlibabaPuHuiTi-Regular, AlibabaPuHuiTi;
+  color: #ffffff;
+}
+.part1 .container .text2 {
+  font-size: 50px;
+  font-weight: bold;
+  color: #ffffff;
+}
+.part1 .container .text3 {
+  font-size: 16px;
+  font-family: AlibabaPuHuiTi-Regular, AlibabaPuHuiTi;
+  font-weight: 400;
+  color: #ffffff;
+}
+.btnGroup {
+  margin-top: 50px;
+}
+.downloadBtn {
+  width: 150px;
+  height: 40px;
+  border: 1px solid #1890ff;
+  background: #1890ff;
+  color: #ffffff;
+}
+.exampleBtn {
+  width: 150px;
+  height: 40px;
+  border: 1px solid #1890ff;
+  background: transparent;
+  color: #1890ff;
+  margin-left: 20px;
+}
+.part2 {
+  background-color: #09111c;
+  height: 2230px;
+}
+.intro {
+  padding: 80px 0;
+}
+.intro .introText1 {
+  text-align: center;
+  color: #fff;
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+.intro .introText2 {
+  text-align: center;
+  color: #ffffff;
+  font-size: 16px;
+}
+.module .moduleTitle1 {
+  text-align: center;
+  color: #ffffff;
+  font-size: 30px;
+}
+.module .moduleTitle2 {
+  text-align: center;
+  color: #666666;
+  font-size: 16px;
+}
+.module .moduleText {
+  text-align: center;
+  color: #ffffff;
+  font-size: 26px;
+}
+.module .moduleGroup {
+  display: flex;
+  padding: 40px 0 50px 0;
+}
+.module .moduleGroup .modulePart1,
+.module .moduleGroup .modulePart2,
+.module .moduleGroup .modulePart3 {
+  flex: 30%;
+  height: 280px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 50px;
+}
+.module .moduleGroup .modulePart2 {
+  margin: 0 5%;
+}
+.image{
+    border: 1px dashed #777;
+}
+.imageDiv{
+    width: fit-content;
+    margin: 0 auto;
+    margin-bottom: 30px;
+}
+.detail .detailPart{
+    margin-bottom: 60px;
+    display: flex;
+}
+.detail .detailPart .detailImg{
+    flex:68%;
+}
+.detail .detailPart .detailImg img{
+    width: 100%;
+}
+.detail .detailPart .detailContent{
+    flex:32%;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 100px 30px;
+}
+.detailText1{
+    font-size: 25px;
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+.detailText2{
+    font-size: 16px;
+    color: #ffffff;
+}

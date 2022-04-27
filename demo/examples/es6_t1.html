@@ -1,0 +1,41 @@
+<!--
+ * @Descripttion: 
+ * @version: 1.0
+ * @Author:
+ * @Date: 2022-04-14 15:24:52
+ * @LastEditors  :
+ * @LastEditTime : 2022-04-14 15:24:52
+ -->
+<!DOCTYPE html>
+<head>
+    <title>星空背景</title>
+    <style>
+        html, body{
+            width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="../../thirds_plugins/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="../../lib/TTMap.min.css">
+    <script type="text/javascript" src="../../thirds_plugins/Cesium/Cesium.js"></script>
+    <script type="text/javascript" src="../../lib/TTMap.js"></script>
+</head>
+<body>
+<div id="ttmapContainer"></div>
+<script>
+    // Cesium.Ion.defaultAccessToken='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjZWQ4OGUyMS0zMzQ4LTQ1ZjAtOTcyMC1kZjE3NWZjMzkzMzMiLCJpZCI6MTI5ODUsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NjIyODk1NTN9.5BF7xVHVIo2AcorTcH3cIs8hT2ZEbhwPe_uVeWYInF0';
+    var globe=new TTMap.Globe("ttmapContainer",
+        {   basemaps: [{type:'tdt',
+                    url:'http://t0.tianditu.com/img_w/wmts?service=wmts&request=GetTile&version=1.0.0&LAYER=img&tileMatrixSet=w&TileMatrix={TileMatrix}&TileRow={TileRow}&TileCol={TileCol}&style=default&format=tiles&tk=f6616fa13df718e2cd6280af4c45f5a2',
+                    crs:'EPSG:3857'
+                    },
+                    {   type:'wmts',
+                        url:'http://localhost:8088/geoserver/gwc/service/wmts?',
+                        layer:'tiger:poly_landmarks',
+                        tileMatrixSetID:'EPSG:4326',
+                        tileMatrixLabels:['EPSG:4326:0','EPSG:4326:1','EPSG:4326:2','EPSG:4326:3','EPSG:4326:4','EPSG:4326:5','EPSG:4326:6','EPSG:4326:7','EPSG:4326:8','EPSG:4326:9','EPSG:4326:10']
+                    }
+                ],
+            center:{lng:-73.96,lat:40.77,alt:50000}
+        });
+</script>
+</body>

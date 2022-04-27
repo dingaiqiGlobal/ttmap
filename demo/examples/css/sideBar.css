@@ -1,0 +1,117 @@
+.main-sidebar {
+    position: fixed;
+}
+
+.menuTitle a.active {
+    color: #f8f8f8;
+}
+
+.skin-blue .main-sidebar {
+    background-color: #fff;
+    padding-top: 0;
+}
+
+.skin-blue .sidebar-menu > li.treeview:hover > a {
+    border-left: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.skin-blue .sidebar-menu > li.treeview.active > a {
+    border-left: 3px solid rgba(0, 0, 0, 0.1);
+}
+
+.skin-blue .sidebar .second-menu, .skin-blue .sidebar .third-menu {
+    padding-left: 0;
+}
+
+.skin-blue .sidebar .third-menu a {
+    padding-left: 30px;
+}
+
+.skin-blue .sidebar a {
+    color: #000000;
+}
+
+.skin-blue .treeview-menu li > a {
+    border-left: 3px solid rgba(24, 144, 255, 0.05);
+}
+
+.skin-blue .treeview-menu li > a:hover, .skin-blue .treeview-menu li.active > a {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-left-color: rgba(0, 0, 0, 0.3);
+}
+
+.skin-blue .treeview-menu > li > a {
+    color: #000000;
+    padding-left: 35px;
+}
+
+.skin-blue .sidebar-menu > li > .treeview-menu {
+    margin: 0;
+    background: rgba(24, 144, 255, 0.05);
+}
+
+.sidebar-menu li.active > .treeview-menu {
+    background: rgba(24, 144, 255, 0.05);
+}
+
+/*侧边栏收起后向右展开的边框宽度*/
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > span:not(.pull-right), .sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > .treeview-menu {
+    border-radius: 0;
+    width: 220px;
+}
+
+/*侧边栏收起后向右展开时一级菜单箭头的位置*/
+.sidebar-mini.sidebar-collapse .sidebar-menu > li:hover > a > .pull-right-container {
+    left: 220px !important;
+}
+
+.sidebar-mini.sidebar-collapse .sidebar-menu > li > .treeview-menu {
+    padding-top: 0;
+    padding-bottom: 0;
+    border-radius: 0;
+}
+
+.skin-blue .sidebar-menu > li:hover > a, .skin-blue .sidebar-menu > li.active > a {
+    color: #000000;
+    background:rgba(24, 144, 255, 0.2);
+}
+
+.skin-blue .treeview-menu > li.active > a, .skin-blue .treeview-menu > li > a:hover {
+    color: #000000;
+}
+
+.main-sidebar .iconName {
+    margin-right: 10px;
+    color: #000000;
+    font-size: 14px;
+}
+
+.main-sidebar .firstMenuTitle {
+    color: #000000;
+    font-size: 14px;
+}
+
+.main-sidebar .secondMenuTitle {
+    color: #000000;
+    padding-left: 10px;
+    font-size: 14px;
+}
+
+.main-sidebar .thirdMenuTitle {
+    color: #000000;
+    font-size: 14px;
+    padding-left: 32px;
+}
+
+.main-sidebar .pull-right {
+    color: #000000
+}
+/* .sidebar-menu>li>a {
+    padding: 12px 25px 12px 36px;
+}
+.sidebar-menu li>a>.pull-right-container {
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    margin-top: -7px;
+} */

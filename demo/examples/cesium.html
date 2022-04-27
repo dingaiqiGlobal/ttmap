@@ -1,0 +1,35 @@
+<!--
+ * @Descripttion: 
+ * @version: 1.0
+ * @Author:
+ * @Date: 2022-04-14 15:24:52
+ * @LastEditors  :
+ * @LastEditTime : 2022-04-14 15:24:52
+ -->
+<!DOCTYPE html>
+<head>
+    <title>cesium地图</title>
+    <style>
+        html, body{
+            width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="../../thirds_plugins/Cesium/Widgets/widgets.css">
+    <link rel="stylesheet" href="../../lib/TTMap.min.css">
+    <script type="text/javascript" src="../../thirds_plugins/Cesium/Cesium.js"></script>
+    <script type="text/javascript" src="../../lib/TTMap.js"></script>
+</head>
+<body>
+<div id="ttmapContainer"></div>
+<script>
+    var globe=new TTMap.Globe("ttmapContainer",
+        {   basemaps: [
+                {
+                    type:'cesium',
+                    assetId:3845
+                }
+            ]
+        });
+</script>
+
+</body>

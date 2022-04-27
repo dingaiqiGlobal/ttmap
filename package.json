@@ -1,0 +1,37 @@
+{
+  "name": "TTMap",
+  "version": "1.0.0",
+  "description": "中科大脑数字孪生引擎api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp build",
+    "dev": "gulp dev"
+  },
+  "dependencies": {
+    "fd-gulp-convert-encoding": "^0.0.1",
+    "gulp": "^4.0.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-connect": "^5.7.0",
+    "gulp-copy": "^0.0.2",
+    "gulp-debug": "^2.1.2",
+    "gulp-jsdoc3": "^3.0.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-rename": "^1.2.2",
+    "gulp-rimraf": "^0.2.2",
+    "gulp-uglify": "^1.5.4",
+    "http-server": "^14.1.0",
+    "internal": "^2.0.27",
+    "open": "^8.4.0",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-stream": "^7.0.0"
+  },
+  "keywords": [
+    "zkdn",
+    "cesium",
+    "gis"
+  ],
+  "author": "中科大脑",
+  "license": "ISC"
+}

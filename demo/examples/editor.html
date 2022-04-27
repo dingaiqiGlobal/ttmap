@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+    <title>TTmap</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico"/>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/font-awesome.min.css">
+    <link rel="stylesheet" href="./css/ionicons.min.css">
+    <link rel="stylesheet" href="./css/AdminLTE.min.css">
+    <link rel="stylesheet" href="./css/skin-blue.min.css">
+    <link rel="stylesheet" href="./css/blue.css">
+
+    <link rel="stylesheet" href="./css/common.css">
+    <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/sideBar.css">
+    <link rel="stylesheet" href="./css/editor.css">
+
+    <script type="text/javascript" src="./js/jquery.min.js"></script>
+    <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="./js/ace/ace.js"></script>
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="./js/html5.min.js"></script>
+    <script type="text/javascript" src="./js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="hold-transition skin-blue sidebar-mini sidebar-collapse">
+<div class="wrapper"></div>
+
+<script type="text/javascript" src="./js/jquery.scrollTo.min.js"></script>
+<script type="text/javascript" src="./js/app.min.js"></script>
+<script>
+    $('.wrapper').load('../editor.html', function () {
+        var header = $('.nav-header');
+        header.load('../header.html');
+        var body = $('body');
+        body.append("<script type='text/javascript' src='./config.js'><\/script>");
+        body.append("<script type='text/javascript' src='./js/sidebar.js'><\/script>");
+        body.append("<script type='text/javascript' src='./js/editor.js'><\/script>");
+    });
+</script>
+</body>
+</html>

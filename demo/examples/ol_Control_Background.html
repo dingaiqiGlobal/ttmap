@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 90%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <input type="button" id="setBackground" value="设置地图背景" onclick="setBgImg()" />
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 12
+            })
+        });
+        setBgImg = () => {
+            var div = document.getElementById('map');
+            div.style.backgroundColor = 'black';
+            div.style.backgroundImage = 'url(../../images/zkdn.png)';
+        }
+    </script>
+</body>
+
+</html>

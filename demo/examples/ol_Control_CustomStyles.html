@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* 全屏 */
+        .ol-custom-fullscreen {
+            top: 10px;
+            right: 50px;
+
+        }
+
+        .ol-custom-fullscreen>.ol-custom-fullscreen-false {
+            background-color: #ffffff;
+            color: #999999;
+            cursor: pointer;
+        }
+
+        /* 缩放 */
+        .ol-custom-zoom {
+            top: 50px;
+            right: 50px;
+        }
+
+        .ol-custom-zoom .ol-custom-zoom-in {
+            background-color: #ffffff;
+            color: #999999;
+            cursor: pointer;
+        }
+
+        .ol-custom-zoom .ol-custom-zoom-out {
+            background-color: #ffffff;
+            color: #999999;
+            cursor: pointer;
+        }
+
+        .ol-custom-zoomSlider {
+            top: 110px;
+            right: 60px;
+            height: 100px;
+            width: 4px;
+            border-radius: 8px;
+            background-image: url(./images/zoomSlider.png);
+            background-color: rgba(252, 253, 255, 0);
+            background-repeat: no-repeat;
+            background-size: 100%;
+        }
+
+        .ol-custom-zoomSlider button {
+            position: relative;
+            right: 5px;
+            height: 10px;
+            width: 10px;
+            cursor: pointer;
+            background-color: none;
+            background-image: url(./images/zoomSliderButton.svg);
+            background-repeat: no-repeat;
+        }
+
+        /*旋转*/
+        .compass_pedestal {
+            position: absolute;
+            top: 230px;
+            right: 50px;
+            width: 50px;
+            height: 50px;
+            background-image: url(./images/compass_pedestal.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            z-index: 1;
+        }
+
+        .compass_pedestal>.compass {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+            width: 10px;
+            height: 30px;
+            background-image: url(./images/compass.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            cursor: pointer;
+            transition: all 0.2s linear;
+        }
+
+        .compass_pedestal>.CWRotate {
+            position: absolute;
+            top: 14px;
+            right: 4px;
+            width: 7px;
+            height: 22px;
+            background-image: url(./images/CWRotate.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            cursor: pointer;
+        }
+
+        .compass_pedestal>.CCWRotate {
+            position: absolute;
+            top: 14px;
+            left: 4px;
+            width: 7px;
+            height: 22px;
+            background-image: url(./images/CCWRotate.png);
+            background-repeat: no-repeat;
+            background-size: 100%;
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="map" class="map">
+        <div class='compass_pedestal'>
+            <div class='compass'></div>
+            <div class='CWRotate'></div>
+            <div class='CCWRotate'></div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 12,
+                controls: ol.control.defaults({
+                    zoom: false
+                })
+            })
+        });
+        map.addControl(new ol.control.FullScreen({
+            className: 'ol-custom-fullscreen',
+        }));
+        map.addControl(new ol.control.Zoom({
+            className: 'ol-custom-zoom',
+        }));
+        map.addControl(new ol.control.ZoomSlider({
+            className: 'ol-custom-zoomSlider',
+        }));
+        map.addControl(new ol.control.OverviewMap({
+            collapsible: true,
+            collapseLabel: "↘",
+            label: "↖",
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                }),
+            ]
+        }));
+
+        let compass = document.querySelector(".compass");
+        let CWRotate = document.querySelector(".CWRotate");
+        let CCWRotate = document.querySelector(".CCWRotate");
+        compass.addEventListener("click", (e) => {
+            map.getView().setRotation('0');
+            e.target.style.transform = "";
+        });
+        CWRotate.addEventListener("click", () => {
+            let rotation = map.getView().getRotation();
+            rotation += Math.PI / 2;
+            map.getView().setRotation(rotation);
+            let angle = 'rotate(' + (180 * rotation / 3.14) + 'deg)'
+            compass.style.transform = angle;
+        });
+        CCWRotate.addEventListener("click", () => {
+            let rotation = map.getView().getRotation();
+            rotation -= Math.PI / 2;
+            map.getView().setRotation(rotation);
+            let angle = 'rotate(' + (180 * rotation / 3.14) + 'deg)'
+            compass.style.transform = angle;
+        });
+    </script>
+</body>
+
+</html>

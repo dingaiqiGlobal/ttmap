@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="13px" height="5px" viewBox="0 0 13 5" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>控制杆</title>
+    <desc>Created with Sketch.</desc>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="项目icon" transform="translate(-1197.000000, -310.000000)">
+            <g id="控制杆" transform="translate(1197.000000, 310.000000)">
+                <polygon id="矩形" fill="#4863A8" points="0 -1.13659082e-13 13 -1.13659082e-13 13 5 0 5"></polygon>
+                <polygon id="矩形" fill="#FFFFFF" points="2 2 11 2 11 3 2 3"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

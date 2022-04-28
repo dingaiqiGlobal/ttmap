@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="menu">
+        <label>几何类型 &nbsp;</label>
+        <select id="type">
+            <option value="length">长度</option>
+            <option value="area">面积</option>
+        </select>
+    </div>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 12
+            }),
+        });
+        //加载测量的绘制矢量层
+        let source = new ol.source.Vector();
+        let vector = new ol.layer.Vector({
+            source: source,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ffcc33',
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ffcc33'
+                    })
+                })
+            })
+        });
+        map.addLayer(vector);
+
+        let sketch;//当前绘制的要素
+        let helpTooltipElement;//帮助提示框对象
+        let helpTooltip;//帮助提示框显示的信息
+        let measureTooltipElement;//测量工具提示框对象
+        let measureTooltip;//测量工具中显示的测量值
+        let continuePolygonMsg = '单击继续绘制多边形';//当用户正在绘制多边形时的提示信息文本
+        let continueLineMsg = '单击继续绘制线';//当用户正在绘制线时的提示信息文本
+
+
+
+    </script>
+</body>
+
+</html>

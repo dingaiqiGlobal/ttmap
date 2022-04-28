@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <button id="haidian">旋转定位到海淀</button>
+    <button id="chaoyang">弹性定位到朝阳</button>
+    <button id="miyun">反弹定位到密云</button>
+    <button id="fangshan">围绕房山</button>
+    <button id="huairou">飞行怀柔</button>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let view = new ol.View({
+            center: ol.proj.fromLonLat([116.39392, 39.916927]),
+            zoom: 12
+        });
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: view
+        });
+
+        let haidian = ol.proj.fromLonLat([116.323206, 39.974456]);
+        let chaoyang = ol.proj.fromLonLat([116.518677, 39.987282]);
+        let miyun = ol.proj.fromLonLat([116.863051, 40.46499]);
+        let fangshan = ol.proj.fromLonLat([116.004128, 39.725184]);
+        let huairou = ol.proj.fromLonLat([116.630211, 40.35182]);
+
+        document.getElementById('haidian').onclick = () => {
+            let center = view.getCenter();
+            view.animate(
+                {
+                    center: [
+                        center[0] + (haidian[0] - haidian[0]) / 2,
+                        center[1] + (haidian[1] - haidian[1]) / 2
+                    ],
+                    rotation: Math.PI,
+                    easing: ol.easing.easeIn
+                },
+                {
+                    center: haidian,
+                    rotation: 2 * Math.PI,
+                    easing: ol.easing.easeOut
+                });
+        };
+        document.getElementById('chaoyang').onclick = () => {
+            view.animate({
+                center: chaoyang,
+                duration: 2000,
+                easing: (t) => {
+                    return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
+                }
+            });
+        };
+        document.getElementById('miyun').onclick = () => {
+            view.animate({
+                center: miyun,
+                duration: 2000,
+                easing: (t) => {
+                    let s = 7.5625, p = 2.75, l;
+                    if (t < (1 / p)) {
+                        l = s * t * t;
+                    } else {
+                        if (t < (2 / p)) {
+                            t -= (1.5 / p);
+                            l = s * t * t + 0.75;
+                        } else {
+                            if (t < (2.5 / p)) {
+                                t -= (2.25 / p);
+                                l = s * t * t + 0.9375;
+                            } else {
+                                t -= (2.625 / p);
+                                l = s * t * t + 0.984375;
+                            }
+                        }
+                    }
+                    return l;
+                }
+            });
+        };
+        document.getElementById('fangshan').onclick = () => {
+            var rotation = view.getRotation();
+            view.animate(
+                {
+                    rotation: rotation + Math.PI,//
+                    anchor: fangshan,
+                    easing: ol.easing.easeIn
+                },
+                {
+                    rotation: rotation + 2 * Math.PI,
+                    anchor: fangshan,
+                    easing: ol.easing.easeOut
+                });
+        };
+        document.getElementById('huairou').onclick = () => {
+            var duration = 2000;
+            var zoom = view.getZoom();
+            var parts = 2;
+            var called = false;
+            function callback(complete) {
+                --parts;
+                if (called) {
+                    return;
+                }
+                if (parts === 0 || !complete) {
+                    called = true;
+                    done(complete);
+                }
+            }
+            view.animate({
+                center: huairou,
+                duration: duration
+            }, callback);
+            view.animate({
+                zoom: zoom - 1,
+                duration: duration / 2
+            }, {
+                zoom: zoom,
+                duration: duration / 2
+            }, callback);
+        };
+    </script>
+</body>
+
+</html>

@@ -172,20 +172,20 @@ var exampleConfig = {
                 content: [{
                     name: "WFS",
                     thumbnail: "xingkong.gif",
-                    fileName: "es6_t1"
+                    fileName: "ol_OMS_WFS"
                 }, {
                     name: "WMS",
                     thumbnail: "xingkong.gif",
-                    fileName: "es6_t1"
+                    fileName: "ol_OMS_WMS"
                 },
                 {
                     name: "WMTS",
                     thumbnail: "xingkong.gif",
-                    fileName: "es6_t1"
+                    fileName: "ol_OMS_WMTS"
                 }, {
                     name: "TMS",
                     thumbnail: "xingkong.gif",
-                    fileName: "es6_t1"
+                    fileName: "ol_OMS_TMS"
                 },
                 ]
             },

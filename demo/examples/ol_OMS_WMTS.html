@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css"
+    type="text/css" />
+  <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+  <button onclick="addWMTS()">添加WMTS服务</button>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([116.39392, 39.916927]),
+        zoom: 12,
+      }),
+    });
+
+    addWMTS = () => {
+      //通过范围计算得到分辨率数组
+      const projection = ol.proj.get("EPSG:900913");
+      const projectionExtent = projection.getExtent();
+      const size = ol.extent.getWidth(projectionExtent) / 256;
+      const resolutions = new Array(18);
+      const matrixIds = new Array(18);
+
+      //定义方式设置分辨率数组等参数（自定义级别、分辨率）
+      // const extent = [-20037508.34, -20037508.34, 20037508.34, 20037508.34];
+      // const tileSize = [256, 256];
+      // const origin = [-20037508.34, 34, 20037508.34];//左上角（geoserver）
+      // const resolutions = [156543.03390625, 78271.516953125, 39135.7584765625, 19567.87923828125,
+      //   9783.939619140625, 4891.9698095703125, 2445.9849047851562, 1222.9924523925781,
+      //   611.4962261962891, 305.74811309814453, 152.87405654907226, 76.43702827453613,
+      //   38.218514137268066, 19.109257068634033, 9.554628534317017, 4.777314267158508,
+      //   2.388657133579254, 1.194328566789627, 0.5971642833948135
+      // ];
+      // const matrixIds = ['EPSG:900913:0', 'EPSG:900913:1', 'EPSG:900913:2',
+      //   'EPSG:900913:3', 'EPSG:900913:4', 'EPSG:900913:5', 'EPSG:900913:6',
+      //   'EPSG:900913:7', 'EPSG:900913:8', 'EPSG:900913:9', 'EPSG:900913:10',
+      //   'EPSG:900913:11', 'EPSG:900913:12', 'EPSG:900913:13', 'EPSG:900913:14',
+      //   'EPSG:900913:15', 'EPSG:900913:16', 'EPSG:900913:17', 'EPSG:900913:18'];
+
+
+      //生成WMTS分辨率和matrixIds数组
+      for (let z = 0; z < 18; z++) {
+        resolutions[z] = size / Math.pow(2, z);
+        matrixIds[z] = "EPSG:900913:" + z; //geoserver专用
+      }
+      let wmtsLayer = new ol.layer.Tile({
+        opacity: 0.7,
+        source: new ol.source.WMTS({
+          attributions: "geoserver_wmts", //数据源信息
+          url: "http://localhost:8090/geoserver/gwc/service/wmts", //WMTS服务基地址
+          layer: "ZHJY:haidian", //图层
+          matrixSet: "EPSG:900913", //投影坐标系设置矩阵（谷歌地图兼容）
+          format: "image/png", //图片格式
+          projection: projection, //数据的投影坐标系
+          tileGrid: new ol.tilegrid.WMTS({
+            //瓦片网格对象
+            origin: ol.extent.getTopLeft(projectionExtent), //切片原点（获取坐标范围左上角）
+            resolutions: resolutions, //分辨率数组
+            matrixIds: matrixIds, //矩阵标识列表，与地图级数保持一致
+          }),
+          style: "",
+          wrapX: true,
+        }),
+      });
+      map.addLayer(wmtsLayer);
+    };
+  </script>
+</body>
+
+</html>

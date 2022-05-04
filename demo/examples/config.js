@@ -186,8 +186,32 @@ var exampleConfig = {
                     name: "TMS",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_OMS_TMS"
+                },{
+                    name: "WFS_GetFeature",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_OMS_TMS"
+                },{
+                    name: "WFS_Transaction",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_OMS_TMS"
+                },{
+                    name: "WMS_GetFeatureInfo",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_OMS_TMS"
                 },
                 ]
+            },
+            "样式": {
+                name: "样式",
+                content: [{
+                    name: "唯一值渲染",
+                    thumbnail: "xingkong.gif",
+                    fileName: "es6_t1"
+                }, {
+                    name: "热力图渲染",
+                    thumbnail: "xingkong.gif",
+                    fileName: "es6_t1"
+                }]
             },
             "图形绘制": {
                 name: "图形绘制",

@@ -49,15 +49,14 @@
                 return "http://online3.map.bdimg.com/onlinelabel/?qt=tile&x=" + x + "&y=" + y + "&z=" + z + "&styles=pl&udt=20151021&scaler=1&p=1";
             }
         });
-        //百度地图
         var baidu_layer = new ol.layer.Tile({
             source: baidu_source
         });
         var map = new ol.Map({
             target: 'g2map',//地图标签id
-            layers: [],
+            layers: [baidu_layer],
             view: new ol.View({
-                center: [12519281, 4088382],//地图中心点位置
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
                 zoom: 12
             })
         });

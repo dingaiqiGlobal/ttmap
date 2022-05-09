@@ -29,10 +29,11 @@
                 })
             ],
             view: new ol.View({
-                center: ol.proj.fromLonLat([116.39392, 39.916927]),
-                zoom: 12
+                center: ol.proj.fromLonLat([116.39392, 40.2506927]),
+                zoom: 9
             })
         });
+
         let styleData = {
             label: {
                 show: true,
@@ -80,13 +81,60 @@
         map.addLayer(vectorLayer);
 
         addStyle = (feature, styleData) => {
-            console.log(feature)
             let geom = feature.getGeometry();
             let type = geom.getType().toLowerCase(); //获取geojson几何类型小写
             let { label, stroke, field } = styleData;
             let color = styleData.colorMap[feature.get(field)];
-            console.log(color)
-
+            if (type.indexOf("polygon") !== -1) {//没有用type === "polygon"，是因为geometry包含MultiPolygon
+                styleJson = {
+                    fill: new ol.style.Fill({
+                        color: color,
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: stroke.color,
+                        lineDash: stroke.dash,
+                        width: stroke.width,
+                    }),
+                };
+            } else if (type.indexOf("linestring") !== -1) {
+                styleJson = {
+                    stroke: new ol.style.Stroke({
+                        color: color,
+                        lineDash: stroke.dash,
+                        width: stroke.width,
+                    }),
+                };
+            } else {
+                styleJson = {
+                    image: new ol.style.CircleStyle({
+                        radius: 8,
+                        fill: new ol.style.Fill({
+                            color: color,
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: stroke.color,
+                            lineDash: stroke.dash,
+                            width: stroke.width,
+                        }),
+                    }),
+                };
+            }
+            if (label.show) {
+                let text = feature.get(label.field);
+                let font = label.font ? label.font : "normal 12px 微软雅黑";
+                styleJson.text = new ol.style.Text({
+                    font: font,
+                    text: text.toString(),
+                    fill: new ol.style.Fill({
+                        color: label.textColor,
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: label.strokeColor,
+                        width: label.strokeWidth,
+                    }),
+                });
+            }
+            return new ol.style.Style(styleJson);
         }
 
 

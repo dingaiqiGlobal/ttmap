@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 40.2506927]),
+                zoom: 9
+            })
+        });
+
+        let styleData = {
+            label: {
+                show: true,
+                field: "NAME",
+                font: "bold 14px 微软雅黑",
+                textColor: "black",
+                strokeWidth: 1,
+                strokeColor: "#feffff",
+            },
+            stroke: {
+                width: 0.1,
+                color: "#feffff",
+                dash: [0],
+            },
+            field: "POPU",
+            colorMap: {
+                "<50": "#006100",
+                "50-100": "#559100",
+                "100-150": "#a4c400",
+                "150-200": "#ffff00",
+                "200-250": "#ffbb00",
+                "250-300": "#ff7700",
+                ">300": "#ff2600",
+            },
+        };
+        let vectorSource = new ol.source.Vector({
+            format: new ol.format.GeoJSON(),
+            url: 'http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3Abeijing&maxFeatures=50&outputFormat=application%2Fjson',
+        })
+        let vectorLayer = new ol.layer.Vector({
+            source: vectorSource,
+            style: (feature) => {
+                return addStyle(feature, styleData);
+            },
+        })
+        map.addLayer(vectorLayer);
+
+        addStyle = (feature, styleData) => {
+            let geom = feature.getGeometry();
+            let type = geom.getType().toLowerCase(); //获取geojson几何类型小写
+            let { label, stroke, field, colorMap } = styleData;
+            let PopuValue = feature.get(field);// POPU原始数据存储为number，如果是字符串parseFloat()
+            //console.log(typeof (PopuValue)
+            let color;
+            let styleJson = {};
+            Object.keys(colorMap).map((key) => {
+                let min;
+                let max;
+                if (key.indexOf("<") !== -1) {
+                    min = 0;
+                    max = parseFloat(key.split("<")[1]);
+                }
+                if (key.indexOf(">") !== -1) {
+                    min = parseFloat(key.split(">")[1]);
+                    max = 400;
+                }
+                if (key.indexOf("-") !== -1) {
+                    let range = key.split("-");
+                    min = parseFloat(range[0]);
+                    max = parseFloat(range[1]);
+                }
+                if (PopuValue >= min && PopuValue < max) {
+                    color = colorMap[key];
+                }
+            })
+
+            if (type.indexOf("polygon") !== -1) {//没有用type === "polygon"，是因为geometry包含MultiPolygon
+                styleJson = {
+                    fill: new ol.style.Fill({
+                        color: color,
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: stroke.color,
+                        lineDash: stroke.dash,
+                        width: stroke.width,
+                    }),
+                };
+            }
+            if (label.show) {
+                let text = feature.get(label.field);
+                let font = label.font ? label.font : "normal 12px 微软雅黑";
+                styleJson.text = new ol.style.Text({
+                    font: font,
+                    text: text.toString(),
+                    fill: new ol.style.Fill({
+                        color: label.textColor,
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: label.strokeColor,
+                        width: label.strokeWidth,
+                    }),
+                });
+            }
+            return new ol.style.Style(styleJson);
+        }
+    </script>
+</body>
+
+</html>

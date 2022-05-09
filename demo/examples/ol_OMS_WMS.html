@@ -1,90 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <style>
-      .map {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-      }
-    </style>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css"
-      type="text/css"
-    />
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
-    <title>OpenLayers example</title>
-  </head>
 
-  <body>
-    <button onclick="addWMS1()">image WMS方式</button>
-    <button onclick="addWMS2()">tiled WMS方式</button>
-    <button onclick="addWMS3()">tile grid 512x256 WMS方式</button>
-    <div id="map" class="map"></div>
-    <script type="text/javascript">
-      let map = new ol.Map({
-        target: "map",
-        layers: [
-          new ol.layer.Tile({
-            source: new ol.source.OSM(),
-          }),
-        ],
-        view: new ol.View({
-          center: ol.proj.fromLonLat([116.39392, 39.916927]),
-          zoom: 12,
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 800px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css"
+    type="text/css" />
+  <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+  <button onclick="addWMS1()">image WMS方式</button>
+  <button onclick="addWMS2()">tiled WMS方式</button>
+  <button onclick="addWMS3()">tile grid 512x256 WMS方式</button>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([116.39392, 39.916927]),
+        zoom: 12,
+      }),
+    });
+
+    addWMS1 = () => {
+      let wmsLayer = new ol.layer.Image({
+        //extent: [],
+        source: new ol.source.ImageWMS({
+          url: "http://localhost:8090/geoserver/wms",
+          params: { LAYERS: "ZHJY:haidian" }, //WMS的请求参数
+          serverType: "geoserver",
         }),
       });
+      map.addLayer(wmsLayer);
+    };
 
-      addWMS1 = () => {
-        let wmsLayer = new ol.layer.Image({
-          //extent: [],
-          source: new ol.source.ImageWMS({
-            url: "http://localhost:8090/geoserver/wms",
-            params: { LAYERS: "ZHJY:haidian" }, //WMS的请求参数
-            serverType: "geoserver",
-          }),
-        });
-        map.addLayer(wmsLayer);
-      };
+    addWMS2 = () => {
+      let wmsLayer = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: "http://localhost:8090/geoserver/wms",
+          params: { LAYERS: "ZHJY:xicheng", TILED: true },
+          serverType: "geoserver",
+        }),
+      });
+      map.addLayer(wmsLayer);
+    };
 
-      addWMS2 = () => {
-        let wmsLayer = new ol.layer.Tile({
-          source: new ol.source.TileWMS({
-            url: "http://localhost:8090/geoserver/wms",
-            params: { LAYERS: "ZHJY:xicheng", TILED: true },
-            serverType: "geoserver",
-          }),
-        });
-        map.addLayer(wmsLayer);
-      };
+    addWMS3 = () => {
+      let projExtent = ol.proj.get("EPSG:3857").getExtent();
+      let startResolution = ol.extent.getWidth(projExtent) / 256;
+      let resolutions = new Array(20);
+      for (var i = 0, ii = resolutions.length; i < ii; ++i) {
+        resolutions[i] = startResolution / Math.pow(2, i);//Math.pow（底数，几次方）
+      }
+      let tileGrid = new ol.tilegrid.TileGrid({
+        extent: ol.proj.transformExtent([116.37495100000001, 39.857425000000035, 116.44468, 39.97194000000003], 'EPSG:4326', 'EPSG:3857'),
+        //extent:[-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244],
+        resolutions: resolutions,
+        tileSize: [512, 256],
+      });
+      let wmsLayer = new ol.layer.Tile({
+        source: new ol.source.TileWMS({
+          url: "http://localhost:8090/geoserver/wms",
+          params: { LAYERS: "dongcheng", TILED: true },
+          serverType: "geoserver",
+          tileGrid: tileGrid,
+        }),
+      });
+      map.addLayer(wmsLayer);
+    };
+  </script>
+</body>
 
-      addWMS3 = () => {
-        let projExtent = ol.proj.get("EPSG:3857").getExtent();
-        let startResolution = ol.extent.getWidth(projExtent) / 256;
-        let resolutions = new Array(20);
-        for (var i = 0, ii = resolutions.length; i < ii; ++i) {
-          resolutions[i] = startResolution / Math.pow(2, i);//Math.pow（底数，几次方）
-        }
-        let tileGrid = new ol.tilegrid.TileGrid({
-          extent: ol.proj.transformExtent([116.37495100000001,39.857425000000035,116.44468,39.97194000000003], 'EPSG:4326', 'EPSG:3857'),
-          //extent:[-20037508.342789244, -20037508.342789244, 20037508.342789244, 20037508.342789244],
-          resolutions: resolutions,
-          tileSize: [512, 256],
-        });
-        let wmsLayer = new ol.layer.Tile({
-          source: new ol.source.TileWMS({
-            url: "http://localhost:8090/geoserver/wms",
-            params: { LAYERS: "dongcheng", TILED: true },
-            serverType: "geoserver",
-            tileGrid: tileGrid,
-          }),
-        });
-        map.addLayer(wmsLayer);
-      };
-    </script>
-  </body>
 </html>

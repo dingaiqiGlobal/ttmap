@@ -119,6 +119,11 @@ var exampleConfig = {
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Map_MVT"
                 },
+                {
+                    name: "瓦片网格描述",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Map_CanvasTiles"
+                },
                 ]
             },
             "控件": {
@@ -186,27 +191,27 @@ var exampleConfig = {
                     name: "TMS",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_OMS_TMS"
-                },{
+                }, {
                     name: "WFS_GetFeature",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_OMS_TMS"
-                },{
+                }, {
                     name: "WFS_Transaction",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_OMS_TMS"
-                },{
+                }, {
                     name: "WMS_GetFeatureInfo",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_OMS_TMS"
                 },
                 ]
             },
-            "样式": {
-                name: "样式",
+            "图层样式": {
+                name: "图层样式",
                 content: [{
                     name: "唯一值渲染",
                     thumbnail: "xingkong.gif",
-                    fileName: "es6_t1"
+                    fileName: "ol_Layer_Classify"
                 }, {
                     name: "热力图渲染",
                     thumbnail: "xingkong.gif",

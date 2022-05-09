@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 12
+            })
+        });
+        let styleData = {
+            label: {
+                show: true,
+                field: "NAME",
+                font: "bold 14px 微软雅黑",
+                textColor: "black",
+                strokeWidth: 1,
+                strokeColor: "#feffff",
+            },
+            stroke: {
+                width: 0.1,
+                color: "#feffff",
+                dash: [0],
+            },
+            field: "NAME",
+            colorMap: {
+                怀柔区: "#fcd4f4",
+                密云区: "#b6f2fc",
+                延庆区: "#fcefbb",
+                平谷区: "#b3c6fc",
+                昌平区: "#fcb3c8",
+                顺义区: "#dcc7fc",
+                通州区: "#b7b6fc",
+                大兴区: "#fcd1c7",
+                房山区: "#b6fcdd",
+                东城区: "#d0fcbd",
+                西城区: "#d4fcef",
+                丰台区: "#e6b3fc",
+                海淀区: "#fceed7",
+                石景山区: "#fcbdec",
+                门头沟区: "#f0fcd7",
+                朝阳区: "#d2e1fc",
+            },
+        };
+        let vectorSource = new ol.source.Vector({
+            format: new ol.format.GeoJSON(),
+            url: 'http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3Abeijing&maxFeatures=50&outputFormat=application%2Fjson',
+        })
+        let vectorLayer = new ol.layer.Vector({
+            source: vectorSource,
+            style: (feature) => {
+                return addStyle(feature, styleData);
+            },
+        })
+        map.addLayer(vectorLayer);
+
+        addStyle = (feature, styleData) => {
+            console.log(feature)
+            let geom = feature.getGeometry();
+            let type = geom.getType().toLowerCase(); //获取geojson几何类型小写
+            let { label, stroke, field } = styleData;
+            let color = styleData.colorMap[feature.get(field)];
+            console.log(color)
+
+        }
+
+
+    </script>
+</body>
+
+</html>

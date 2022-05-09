@@ -21,36 +21,27 @@
 <body>
     <div id="map" class="map"></div>
     <script type="text/javascript">
+        let baseMapSource = new ol.source.XYZ({
+            url: 'http://192.168.51.11:8004/tiles/openstreetmap/{z}/{x}/{y}.png',
+        })
         let map = new ol.Map({
             target: 'map',
             layers: [
                 new ol.layer.Tile({
-                    source: new ol.source.OSM()
+                    source: baseMapSource
+                }),
+                new ol.layer.Tile({
+                    source: new ol.source.TileDebug({
+                        projection: 'EPSG:3857',
+                        tileGrid: baseMapSource.getTileGrid()
+                    })
                 })
             ],
             view: new ol.View({
                 center: ol.proj.fromLonLat([116.39392, 39.916927]),
                 zoom: 12
-            })
-        });
-        let vectorTile = new ol.source.VectorTile({
-            url: MVTLayer,
-            format: new MVT(),
-        });
-        let MVTTileLayer = new ol.layer.VectorTile({
-            source: vectorTile,
-            zIndex: 1,
-            visible: false,
-            name: "MVT-mapboxStyle",
-        });
-        fetch("http://192.168.51.11:8004/style/style.json")
-            .then((r) => r.json())
-            .then((glStyle) => {
-                //引入ol-mapbox-style
-                //stylefunction(layer, glStyle, 'Source');
-                stylefunction(MVTTileLayer2, glStyle, "dongcheng");
-            });
-        map.addLayer(MVTTileLayer);
+            }),
+        })
     </script>
 </body>
 

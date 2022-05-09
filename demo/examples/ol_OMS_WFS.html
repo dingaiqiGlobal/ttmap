@@ -1,127 +1,119 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <style>
-      .map {
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-      }
-    </style>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css"
-      type="text/css"
-    />
-    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
-    <title>OpenLayers example</title>
-  </head>
 
-  <body>
-    <button onclick="addWFS1()">基础方式</button>
-    <button onclick="addWFS2()">loader方式</button>
-    <div id="map" class="map"></div>
-    <script type="text/javascript">
-      let map = new ol.Map({
-        target: "map",
-        layers: [
-          new ol.layer.Tile({
-            source: new ol.source.OSM(),
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 800px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css"
+    type="text/css" />
+  <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+  <button onclick="addWFS1()">基础方式</button>
+  <button onclick="addWFS2()">loader方式</button>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([116.39392, 39.916927]),
+        zoom: 12,
+      }),
+    });
+    addWFS1 = () => {
+      const vectorLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          format: new ol.format.GeoJSON(),
+          url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3Ahaidian&maxFeatures=50000&outputFormat=application%2Fjson",
+          //strategy: ol.loadingstrategy.bbox, //加载策略
+        }),
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: "#cc3333",
+            width: 2,
           }),
-        ],
-        view: new ol.View({
-          center: ol.proj.fromLonLat([116.39392, 39.916927]),
-          zoom: 12,
+          fill: new ol.style.Fill({
+            color: "#ccffff",
+          }),
         }),
       });
-      addWFS1 = () => {
-        const vectorLayer = new ol.layer.Vector({
-          source: new ol.source.Vector({
-            format: new ol.format.GeoJSON(),
-            url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3Ahaidian&maxFeatures=50000&outputFormat=application%2Fjson",
-            //strategy: ol.loadingstrategy.bbox, //加载策略
-          }),
-          style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-              color: "#cc3333",
-              width: 2,
-            }),
-            fill: new ol.style.Fill({
-              color: "#ccffff",
-            }),
-          }),
-        });
-        map.addLayer(vectorLayer);
-      };
+      map.addLayer(vectorLayer);
+    };
 
-      addWFS2 = () => {
-        let vectorSource = new ol.source.Vector({
-          format: new ol.format.GeoJSON(),
-          loader: (extent, resolution, projection) => {
-            let proj = projection.getCode();
-            let url =
-              "http://localhost:8090/geoserver/wfs?service=WFS&" +
-              "version=1.1.0&request=GetFeature&typename=ZHJY:haidian&" +
-              "outputFormat=application/json&srsname=" +
-              proj +
-              "&" +
-              "bbox=" +
-              extent.join(",") +
-              "," +
-              proj;
+    addWFS2 = () => {
+      let vectorSource = new ol.source.Vector({
+        format: new ol.format.GeoJSON(),
+        loader: (extent, resolution, projection) => {
+          let proj = projection.getCode();
+          let url =
+            `http://localhost:8090/geoserver/wfs?
+              service=WFS&version=1.1.0&request=GetFeature&typename=ZHJY:haidian&outputFormat=application/json
+              &srsname=${proj}&bbox=${extent.join(",")},${proj}`
+          let featureRequest = new ol.format.WFS().writeGetFeature({
+            srsName: "EPSG:3857", //坐标系统
+            featureNS: "www.zhjy.com", //命名空间 URI
+            featurePrefix: "ZHJY", //工作区名称
+            featureTypes: ["haidian"], //查询图层，可以是同一个工作区下多个图层，逗号隔开
+            maxFeatures: 50000, //最大访问要素
+            outputFormat: "application/json", //输出格式
+          });
 
-            let featureRequest = new ol.format.WFS().writeGetFeature({
-              srsName: "EPSG:3857", //坐标系统
-              featureNS: "www.zhjy.com", //命名空间 URI
-              featurePrefix: "ZHJY", //工作区名称
-              featureTypes: ["haidian"], //查询图层，可以是同一个工作区下多个图层，逗号隔开
-              maxFeatures: 50000, //最大访问要素
-              outputFormat: "application/json", //输出格式
+          fetch(url, {
+            method: "POST",
+            body: new XMLSerializer().serializeToString(featureRequest),
+          })
+            .then(function (response) {
+              return response.json();
+            })
+            .then(function (json) {
+              var features = new ol.format.GeoJSON().readFeatures(json);
+              if (features.length > 0) {
+                vectorSource.clear();
+                vectorSource.addFeatures(features);
+              }
+            })
+            .catch((err) => {
+              console.log("请求错误", err);
             });
+        },
 
-            fetch(url, {
-              method: "POST",
-              body: new XMLSerializer().serializeToString(featureRequest),
-            })
-              .then(function (response) {
-                return response.json();
-              })
-              .then(function (json) {
-                var features = new ol.format.GeoJSON().readFeatures(json);
-                if (features.length > 0) {
-                  vectorSource.clear();
-                  vectorSource.addFeatures(features);
-                }
-              })
-              .catch((err) => {
-                console.log("请求错误", err);
-              });
-          },
-
-          strategy: ol.loadingstrategy.tile(
-            new ol.tilegrid.createXYZ({
-              maxZoom: 25,
-            })
-          ), //加载策略
-          projection: "EPSG4326",
-        });
-        let vectorLayer = new ol.layer.Vector({
-          source: vectorSource,
-          style: new ol.style.Style({
-            stroke: new ol.style.Stroke({
-              color: "#660099",
-              width: 2,
-            }),
-            fill: new ol.style.Fill({
-              color: "#FFFF99",
-            }),
+        strategy: ol.loadingstrategy.tile(
+          new ol.tilegrid.createXYZ({
+            maxZoom: 25,
+          })
+        ), //加载策略
+        projection: "EPSG4326",
+      });
+      let vectorLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: "#660099",
+            width: 2,
           }),
-        });
-        map.addLayer(vectorLayer);
-      };
-    </script>
-  </body>
+          fill: new ol.style.Fill({
+            color: "#FFFF99",
+          }),
+        }),
+      });
+      map.addLayer(vectorLayer);
+    };
+  </script>
+</body>
+
 </html>

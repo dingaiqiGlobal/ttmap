@@ -6,7 +6,7 @@
   <style>
     .map {
       width: 100%;
-      height: 100%;
+      height: 800px;
       margin: 0;
       padding: 0;
       overflow: hidden;
@@ -69,7 +69,7 @@
     var helpTooltip;//帮助提示框显示的信息
     var measureTooltipElement;//测量工具提示框对象
     var measureTooltip;//测量工具中显示的测量值
- ;
+    ;
 
     /**
      * 鼠标移动事件处理函数
@@ -100,7 +100,7 @@
     });
     var geodesicCheckbox = document.getElementById('geodesic');//测地学方式对象
     var typeSelect = document.getElementById('type');//测量类型对象
-    var draw; 
+    var draw;
     /**
     * 加载交互绘制控件函数
     */
@@ -148,7 +148,7 @@
               output = formatArea(geom);//面积值
               tooltipCoord = geom.getInteriorPoint().getCoordinates();//坐标
             } else if (geom instanceof ol.geom.LineString) {
-              output = formatLength( geom);//长度值
+              output = formatLength(geom);//长度值
               tooltipCoord = geom.getLastCoordinate();//坐标
             }
             measureTooltipElement.innerHTML = output;//将测量值设置到测量工具提示框中显示
@@ -252,7 +252,7 @@
       }
       return output; //返回多边形的面积
     };
-    
+
     addInteraction(); //调用加载绘制交互控件方法，添加绘图进行测量
   </script>
 </body>

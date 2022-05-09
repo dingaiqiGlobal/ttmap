@@ -94,7 +94,7 @@ var exampleConfig = {
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Map_Bing"
                 }, {
-                    name: "谷歌地图-",
+                    name: "谷歌地图-封闭",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Map_GoogleMap"
                 }, {
@@ -106,7 +106,7 @@ var exampleConfig = {
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Map_TiandituMap"
                 }, {
-                    name: "百度地图-",
+                    name: "百度地图-封闭",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Map_BaiduMap"
                 }, {
@@ -115,7 +115,7 @@ var exampleConfig = {
                     fileName: "ol_Map_ArcGIS"
                 },
                 {
-                    name: "矢量切片MapBox",
+                    name: "矢量切片地图MapBox-",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Map_MVT"
                 },
@@ -211,11 +211,11 @@ var exampleConfig = {
                 content: [{
                     name: "唯一值渲染",
                     thumbnail: "xingkong.gif",
-                    fileName: "ol_Layer_Classify"
+                    fileName: "ol_Layer_UniqueValue"
                 }, {
-                    name: "热力图渲染",
+                    name: "断点值渲染",
                     thumbnail: "xingkong.gif",
-                    fileName: "es6_t1"
+                    fileName: "ol_Layer_BreakValue"
                 }]
             },
             "图形绘制": {

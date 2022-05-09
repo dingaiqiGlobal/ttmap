@@ -42,8 +42,8 @@
       }),
     });
     //加载测量的绘制矢量层
-    var source = new ol.source.Vector(); //图层数据源
-    var vector = new ol.layer.Vector({
+    let source = new ol.source.Vector(); //图层数据源
+    let vector = new ol.layer.Vector({
       source: source,
       style: new ol.style.Style({ //图层样式
         fill: new ol.style.Fill({
@@ -64,25 +64,25 @@
     map.addLayer(vector);
 
 
-    var sketch;//当前绘制的要素
-    var helpTooltipElement;//帮助提示框对象
-    var helpTooltip;//帮助提示框显示的信息
-    var measureTooltipElement;//测量工具提示框对象
-    var measureTooltip;//测量工具中显示的测量值
+    let sketch;//当前绘制的要素
+    let helpTooltipElement;//帮助提示框对象
+    let helpTooltip;//帮助提示框显示的信息
+    let measureTooltipElement;//测量工具提示框对象
+    let measureTooltip;//测量工具中显示的测量值
     ;
 
     /**
      * 鼠标移动事件处理函数
      * @param {ol.MapBrowserEvent} evt
      */
-    var pointerMoveHandler = function (evt) {
+    let pointerMoveHandler = (evt) => {
       if (evt.dragging) {
         return;
       }
-      var helpMsg = '单击开始绘制';//当前默认提示信息
+      let helpMsg = '单击开始绘制';//当前默认提示信息
       //判断绘制几何类型设置相应的帮助提示信息
       if (sketch) {
-        var geom = (sketch.getGeometry());
+        let geom = (sketch.getGeometry());
         if (geom instanceof ol.geom.Polygon) {
           helpMsg = "单击继续绘制面"; //绘制多边形时提示相应内容
         } else if (geom instanceof ol.geom.LineString) {
@@ -95,17 +95,17 @@
     };
     map.on('pointermove', pointerMoveHandler); //地图容器绑定鼠标移动事件，动态显示帮助提示框内容
     //地图绑定鼠标移出事件，鼠标移出时为帮助提示框设置隐藏样式
-    map.getViewport().addEventListener('mouseout', function () {
+    map.getViewport().addEventListener('mouseout', () => {
       helpTooltipElement.classList.add('hidden');
     });
-    var geodesicCheckbox = document.getElementById('geodesic');//测地学方式对象
-    var typeSelect = document.getElementById('type');//测量类型对象
-    var draw;
+    let geodesicCheckbox = document.getElementById('geodesic');//测地学方式对象
+    let typeSelect = document.getElementById('type');//测量类型对象
+    let draw;
     /**
     * 加载交互绘制控件函数
     */
-    function addInteraction() {
-      var type = (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
+    addInteraction = () => {
+      let type = (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
       draw = new ol.interaction.Draw({
         source: source,//测量绘制层数据源
         type: /** @type {ol.geom.GeometryType} */ (type),  //几何图形类型
@@ -134,16 +134,16 @@
       createMeasureTooltip(); //创建测量工具提示框
       createHelpTooltip(); //创建帮助提示框
 
-      var listener;
+      let listener;
       //绑定交互绘制工具开始绘制的事件
       draw.on('drawstart',
-        function (evt) {
+        (evt) => {
           sketch = evt.feature; //绘制的要素
-          var tooltipCoord = evt.coordinate;// 绘制的坐标
+          let tooltipCoord = evt.coordinate;// 绘制的坐标
           //绑定change事件，根据绘制几何类型得到测量长度值或面积值，并将其设置到测量工具提示框中显示
-          listener = sketch.getGeometry().on('change', function (evt) {
-            var geom = evt.target;//绘制几何要素
-            var output;
+          listener = sketch.getGeometry().on('change', (evt) => {
+            let geom = evt.target;//绘制几何要素
+            let output;
             if (geom instanceof ol.geom.Polygon) {
               output = formatArea(geom);//面积值
               tooltipCoord = geom.getInteriorPoint().getCoordinates();//坐标
@@ -157,7 +157,7 @@
         }, this);
       //绑定交互绘制工具结束绘制的事件
       draw.on('drawend',
-        function (evt) {
+        (evt) => {
           measureTooltipElement.className = 'tooltip tooltip-static'; //设置测量提示框的样式
           measureTooltip.setOffset([0, -7]);
           sketch = null; //置空当前绘制的要素对象
@@ -170,7 +170,7 @@
     /**
     *创建一个新的帮助提示框（tooltip）
     */
-    function createHelpTooltip() {
+    createHelpTooltip = () => {
       if (helpTooltipElement) {
         helpTooltipElement.parentNode.removeChild(helpTooltipElement);
       }
@@ -186,7 +186,7 @@
     /**
     *创建一个新的测量工具提示框（tooltip）
     */
-    function createMeasureTooltip() {
+    createMeasureTooltip = () => {
       if (measureTooltipElement) {
         measureTooltipElement.parentNode.removeChild(measureTooltipElement);
       }
@@ -204,7 +204,7 @@
     * 让用户切换选择测量类型（长度/面积）
     * @param {Event} e Change event.
     */
-    typeSelect.onchange = function (e) {
+    typeSelect.onchange = (e) => {
       map.removeInteraction(draw); //移除绘制图形
       addInteraction();//添加绘图进行测量
     };
@@ -214,15 +214,15 @@
     * @param {ol.geom.LineString} line
     * @return {string}
     */
-    var formatLength = function (line) {
-      var length;
+    let formatLength = (line) => {
+      let length;
       if (geodesicCheckbox.checked) { //若使用测地学方法测量
-        var sourceProj = map.getView().getProjection(); //地图数据源投影坐标系
+        let sourceProj = map.getView().getProjection(); //地图数据源投影坐标系
         length = ol.sphere.getLength(line, { "projection": sourceProj, "radius": 6378137 });
       } else {
         length = Math.round(line.getLength() * 100) / 100; //直接得到线的长度
       }
-      var output;
+      let output;
       if (length > 100) {
         output = (Math.round(length / 1000 * 100) / 100) + ' ' + 'km'; //换算成KM单位
       } else {
@@ -235,16 +235,16 @@
     * @param {ol.geom.Polygon} polygon
     * @return {string}
     */
-    var formatArea = function (polygon) {
-      var area;
+    let formatArea = (polygon) => {
+      let area;
       if (geodesicCheckbox.checked) {//若使用测地学方法测量
-        var sourceProj = map.getView().getProjection();//地图数据源投影坐标系
-        var geom = /** @type {ol.geom.Polygon} */(polygon.clone().transform(sourceProj, 'EPSG:4326')); //将多边形要素坐标系投影为EPSG:4326
+        let sourceProj = map.getView().getProjection();//地图数据源投影坐标系
+        let geom = /** @type {ol.geom.Polygon} */(polygon.clone().transform(sourceProj, 'EPSG:4326')); //将多边形要素坐标系投影为EPSG:4326
         area = Math.abs(ol.sphere.getArea(geom, { "projection": sourceProj, "radius": 6378137 })); //获取面积
       } else {
         area = polygon.getArea();//直接获取多边形的面积
       }
-      var output;
+      let output;
       if (area > 10000) {
         output = (Math.round(area / 1000000 * 100) / 100) + ' ' + 'km<sup>2</sup>'; //换算成KM单位
       } else {

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <form>
+        <label for="radius">半径</label>
+        <input id="radius" type="range" min="1" max="50" step="1" value="5" />
+        <label for="blur">模糊值</label>
+        <input id="blur" type="range" min="1" max="50" step="1" value="5" />
+    </form>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 40.2506927]),
+                zoom: 4
+            })
+        });
+
+        /**
+         * 添加热点图层
+        */
+        const radius = document.getElementById('radius');
+        const blur = document.getElementById('blur');
+        const HeatmapLayer = new ol.layer.Heatmap({
+            source: new ol.source.Vector({
+                format: new ol.format.GeoJSON(),
+                url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3Adaxue&maxFeatures=500000&outputFormat=application%2Fjson",
+            }),
+            radius: parseInt(radius.value),//热点半径
+            blur: parseInt(blur.value),//模糊尺寸
+            // weight:用于权值的特性属性或从特性返回权值的函数。 权重值的范围应该在0到1之间(外部的值将固定在这个范围内)。  
+        });
+        map.addLayer(HeatmapLayer);
+        // HeatmapLayer.getSource().on('addfeature', (e) => {//当特性被添加到源中时触发
+        //     e.feature.set('weight', 1);
+        // });
+
+        /**
+         * UI绑定事件-分别为参数设置控件（input）添加事件监听，动态设置热点图的参数
+        */
+        radius.addEventListener('input', () => {
+            HeatmapLayer.setRadius(parseInt(radius.value, 10));
+        });
+        blur.addEventListener('input', () => {
+            HeatmapLayer.setBlur(parseInt(blur.value, 10));
+        });
+    </script>
+</body>
+
+</html>

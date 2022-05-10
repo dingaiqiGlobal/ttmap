@@ -33,7 +33,9 @@
                 zoom: 9
             })
         });
-
+        /**
+         * 初始化样式
+        */
         let styleData = {
             label: {
                 show: true,
@@ -59,6 +61,9 @@
                 ">300": "#ff2600",
             },
         };
+        /**
+         * 添加矢量图层
+        */
         let vectorSource = new ol.source.Vector({
             format: new ol.format.GeoJSON(),
             url: 'http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3Abeijing&maxFeatures=50&outputFormat=application%2Fjson',
@@ -70,7 +75,9 @@
             },
         })
         map.addLayer(vectorLayer);
-
+        /**
+         * 添加样式
+        */
         addStyle = (feature, styleData) => {
             let geom = feature.getGeometry();
             let type = geom.getType().toLowerCase(); //获取geojson几何类型小写

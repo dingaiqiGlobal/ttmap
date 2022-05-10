@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <label for="distance">样本距离</label>
+    <input id="distance" type="range" min="0" max="200" step="1" value="40" />
+    <label for="min-distance">最小距离</label>
+    <input id="min-distance" type="range" min="0" max="200" step="1" value="20" />
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 40.2506927]),
+                zoom: 4
+            })
+        });
+
+        const distanceInput = document.getElementById('distance');
+        const minDistanceInput = document.getElementById('min-distance');
+        /**
+         * 添加聚散图层
+        */
+
+        //实例化矢量数据源
+        let vectorSource = new ol.source.Vector({
+            format: new ol.format.GeoJSON(),
+            url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3Adaxue&maxFeatures=500000&outputFormat=application%2Fjson",
+        })
+        //实例化聚散数据源
+        let clusterSource = new ol.source.Cluster({
+            source: vectorSource,
+            distance: parseInt(distanceInput.value),//样本距离
+            minDistance: parseInt(minDistanceInput.value),//最小距离
+        })
+        //添加图层并设置样式
+        let styleCache = {};
+        let clusterLayer = new ol.layer.Vector({
+            source: clusterSource,
+            style: (feature) => {
+                let size = feature.get('features').length;
+                let style = styleCache[size];
+                if (size === 1) {//为1时，展示图标
+                    style = new ol.style.Style({
+                        image: new ol.style.Icon({
+                            src: '../examples/images/compass.png',
+                            scale: 0.7,
+                        })
+                    })
+                } else {
+                    if (!style) {
+                        style = new ol.style.Style({
+                            image: new ol.style.Circle({
+                                radius: 10,
+                                stroke: new ol.style.Stroke({
+                                    color: '#fff',
+                                }),
+                                fill: new ol.style.Fill({
+                                    color: '#3399CC',
+                                }),
+                            }),
+                            text: new ol.style.Text({
+                                text: size.toString(),
+                                fill: new ol.style.Fill({
+                                    color: '#fff',
+                                }),
+                            }),
+                        });
+                    }
+                }
+                return style;
+            }
+        })
+        map.addLayer(clusterLayer)
+
+        /**
+         * 当地图缩放到最某层级时，取消全部聚合效果
+        */
+        map.getView().on('change:resolution', function (event) {
+            if (map.getView().getZoom() <= 15) {
+                clusterSource.setDistance(0);
+            }
+            else {
+                clusterSource.setDistance(parseInt(distanceInput.value, 10));
+            }
+        })
+
+        /**
+         * UI绑定事件
+        */
+        const distanceHandler = function () {
+            clusterSource.setDistance(parseInt(distanceInput.value, 10));
+        };
+        distanceInput.addEventListener('input', distanceHandler);
+        distanceInput.addEventListener('change', distanceHandler);
+
+        const minDistanceHandler = function () {
+            clusterSource.setMinDistance(parseInt(minDistanceInput.value, 10));
+        };
+        minDistanceInput.addEventListener('input', minDistanceHandler);
+        minDistanceInput.addEventListener('change', minDistanceHandler);
+    </script>
+</body>
+
+</html>

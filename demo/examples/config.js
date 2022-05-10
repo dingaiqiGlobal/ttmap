@@ -216,7 +216,16 @@ var exampleConfig = {
                     name: "断点值渲染",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Layer_BreakValue"
-                }]
+                }, {
+                    name: "热力图渲染",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Layer_HeatMap"
+                }, {
+                    name: "聚散渲染",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Layer_Cluster"
+                }
+                ]
             },
             "图形绘制": {
                 name: "图形绘制",

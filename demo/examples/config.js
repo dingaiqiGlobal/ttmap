@@ -237,7 +237,12 @@ var exampleConfig = {
                     name: "样式编辑",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Geometry_FeaturesStyle"
-                }]
+                }, {
+                    name: "图形交互编辑",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Geometry_ModifyFeatures"
+                }
+            ]
             },
             "地图标注": {
                 name: "地图标注",

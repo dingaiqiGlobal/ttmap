@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                projection: "EPSG:3857",
+                zoom: 12
+            })
+        });
+        /**
+         * 绘制的几何图形要素
+        */
+        //点
+        let point = ol.proj.transform([116.359239347, 39.910755218], "EPSG:4326", "EPSG:3857");
+        let lineString = new ol.geom.LineString([[116.332321636, 39.976605507], [116.444453736, 39.915631819]]);
+        let polygon = new ol.geom.Polygon([
+            [
+                [116.393890189, 39.910278031],
+                [116.419469395, 39.889160315],
+                [116.412033579, 39.872504088],
+                [116.372772473, 39.873396386],
+                [116.358793139, 39.894216669]
+            ]
+        ])
+        lineString.applyTransform(ol.proj.getTransform('EPSG:4326', 'EPSG:3857'));
+        polygon.applyTransform(ol.proj.getTransform('EPSG:4326', 'EPSG:3857'));
+        let pointFeature = new ol.Feature({
+            geometry: new ol.geom.Point(point),
+            name: '点要素',
+        });
+        let lineFeature = new ol.Feature({
+            geometry: lineString,
+            name: '线要素',
+        });
+        let polygonFeature = new ol.Feature({
+            geometry: polygon,
+            name: '面要素',
+        })
+        /**
+         * 实例化点、线、区图层对象
+        */
+        let vectorPoints = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                features: [pointFeature, lineFeature, polygonFeature]
+            }),
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ff0000',
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ff0000'
+                    })
+                })
+            })
+        });
+        map.addLayer(vectorPoints)
+        /**
+         * 定义修改几何图形功能控件对象
+        */
+       let Modify={
+            init:()=>{
+                
+            }
+       }
+    </script>
+</body>
+
+</html>

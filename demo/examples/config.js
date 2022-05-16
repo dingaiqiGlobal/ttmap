@@ -227,17 +227,22 @@ var exampleConfig = {
                 }
                 ]
             },
-            "图形绘制": {
-                name: "图形绘制",
+            "几何形状": {
+                name: "几何形状",
                 content: [{
-                    name: "test1",
+                    name: "绘制几何图形",
                     thumbnail: "xingkong.gif",
-                    fileName: "es6_t1"
+                    fileName: "ol_Geometry_DrawFeatures"
                 }, {
-                    name: "test2",
+                    name: "样式编辑",
                     thumbnail: "xingkong.gif",
-                    fileName: "es6_t1"
-                }]
+                    fileName: "ol_Geometry_FeaturesStyle"
+                }, {
+                    name: "图形交互编辑",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Geometry_ModifyFeatures"
+                }
+            ]
             },
             "地图标注": {
                 name: "地图标注",

@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/css/ol.css" type="text/css">
+    <script src="https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.14.1/build/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <label style="font-weight: bold;">
+        几何图形类型：&nbsp;
+    </label>
+    <select id="type">
+        <option value="None">无</option>
+        <option value="Point" selected="selected">点</option>
+        <option value="LineString">线</option>
+        <option value="Polygon">多边形</option>
+        <option value="Circle">圆</option>
+        <option value="Square">正方形</option>
+        <option value="Box">矩形</option>
+    </select>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 12
+            })
+        });
+        /**
+         * 实例化一个矢量图层Vector作为绘制层
+        */
+        let typeSelect = document.getElementById('type');
+        let draw;
+        let source = new ol.source.Vector();
+        let vector = new ol.layer.Vector({
+            source: source,
+            style: new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: 'rgba(255, 255, 255, 0.2)'
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#ff0000',
+                    width: 2
+                }),
+                image: new ol.style.Circle({
+                    radius: 7,
+                    fill: new ol.style.Fill({
+                        color: '#ff0000'
+                    })
+                })
+            })
+        });
+        map.addLayer(vector);
+        /**
+         * 根据绘制类型进行交互绘制图形处理
+        */
+
+        addInteraction = () => {
+            let value = typeSelect.value;
+            //清空绘制图形（先清空在添加）
+            if (value !== "None") {
+                if (source === null) {//value!=="None"&&source === null 添加绘制图层
+                    source = new ol.source.Vector();
+                    vector.setSource(source)
+                }
+                //通过圆扩展正方形
+                let geometryFunction;
+                let maxPoints;;
+                if (value === 'Square') {
+                    value = 'Circle';
+                    geometryFunction = ol.interaction.Draw.createRegularPolygon(4);
+                }
+                //通过线扩展长方形--6版本以后geometryFunction = createBox()就可以创建矩形;
+                if (value === 'Box') {
+                    value = 'LineString';
+                    maxPoints = 2;
+                    geometryFunction = (coordinates, geometry) => {
+                        let start = coordinates[0];
+                        let end = coordinates[1];
+                        if (!geometry) {
+                            geometry = new ol.geom.Polygon([//面坐标
+                                [start, [start[0], end[1]], end, [end[0], start[1]], start]
+                            ])
+                        }
+                        //线坐标
+                        geometry.setCoordinates([
+                            [start, [start[0], end[1]], end, [end[0], start[1]], start]
+                        ]);
+                        return geometry;
+                    }
+                }
+                //实例化交互绘制类对象并添加到地图容器中
+                draw = new ol.interaction.Draw({
+                    source: source,
+                    type: value,
+                    geometryFunction: geometryFunction,//当几何坐标更新时调用此函数
+                    maxPoints: maxPoints,//绘制图形结束前多边形或线的最大点数，线默认为2，多边形默认为3。
+                    //freehand: true,//手绘
+                })
+                map.addInteraction(draw);
+
+            } else {
+                source = null;
+                vector.setSource(source);
+            }
+        }
+        /**
+         * UI绑定事件
+        */
+        typeSelect.onchange = () => {
+            map.removeInteraction(draw);//先移除
+            addInteraction()
+        }
+        /**
+         * 添加交互绘制功能控件
+        */
+        addInteraction();
+
+    </script>
+</body>
+
+</html>

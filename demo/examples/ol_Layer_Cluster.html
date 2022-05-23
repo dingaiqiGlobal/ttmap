@@ -33,7 +33,9 @@
             ],
             view: new ol.View({
                 center: ol.proj.fromLonLat([116.39392, 40.2506927]),
-                zoom: 4
+                zoom: 4,
+                minZoom: 2,
+                maxZoom: 12,
             })
         });
 
@@ -98,7 +100,7 @@
          * 当地图缩放到最某层级时，取消全部聚合效果
         */
         map.getView().on('change:resolution', function (event) {
-            if (map.getView().getZoom() <= 15) {
+            if (map.getView().getZoom() === map.getView().getMaxZoom()) {
                 clusterSource.setDistance(0);
             }
             else {

@@ -102,7 +102,7 @@ var exampleConfig = {
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Map_GaoDeMap"
                 }, {
-                    name: "天地图地图-",
+                    name: "天地图地图",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_Map_TiandituMap"
                 }, {
@@ -194,8 +194,16 @@ var exampleConfig = {
                 }, {
                     name: "WFS_GetFeature",
                     thumbnail: "xingkong.gif",
-                    fileName: "ol_OMS_TMS"
+                    fileName: "ol_OMS_WFS_GetFeature"
                 }, {
+                    name: "WFS_Filter",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_OMS_WFS_Filter"
+                }, {
+                    name: "WFS_CQL_Filter",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_OMS_WFS_CQL_Filter"
+                },{
                     name: "WFS_Transaction",
                     thumbnail: "xingkong.gif",
                     fileName: "ol_OMS_TMS"
@@ -243,6 +251,18 @@ var exampleConfig = {
                     fileName: "ol_Geometry_ModifyFeatures"
                 }
             ]
+            },
+            "地图事件": {
+                name: "地图事件",
+                content: [{
+                    name: "单击事件方法1",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Event_GetFeaturesAtPixel"
+                }, {
+                    name: "单击事件方法2",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Event_Select"
+                }]
             },
             "地图标注": {
                 name: "地图标注",

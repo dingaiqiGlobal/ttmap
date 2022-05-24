@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 800px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+  <script src="js/ol/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([116.39392, 39.916927]),
+        zoom: 12,
+      }),
+    });
+
+    const baseUrl = "http://localhost:8090/geoserver/ZHJY/ows";
+    const service = "WFS";
+    const version = "1.0.0";
+    const request = "GetFeature";
+    const typeName = "ZHJY:Point";
+    const outputFormat = "application/json";
+    const CQL_FILTER="NAME LIKE 'testPoint'";//类SQL语句
+
+    const vectorLayer = new ol.layer.Vector({
+      source: new ol.source.Vector({
+        format: new ol.format.GeoJSON(),
+        url: `${baseUrl}?service=${service}&version=${version}&request=${request}&typeName=${typeName}&outputFormat=${outputFormat}&CQL_FILTER=${CQL_FILTER}`,
+      }),
+      style: new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 5,
+          fill: new ol.style.Fill({
+            color: 'yellow'
+          }),
+          stroke: new ol.style.Stroke({
+            color: 'blue',
+            width: 1
+          })
+        }),
+      }),
+    });
+    map.addLayer(vectorLayer);
+  </script>
+</body>
+
+</html>

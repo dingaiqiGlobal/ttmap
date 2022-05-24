@@ -20,50 +20,41 @@
 <body>
     <div id="map" class="map"></div>
     <script type="text/javascript">
-        let projection = ol.proj.get("EPSG:4326");
+        url = "https://t0.tianditu.gov.cn/img_w/wmts?tk=21c1e34286caecc25fd94be94bfbe119";
+        proj = "EPSG:900913";
+        level = 18;
+        layerName = "img";
+        format = "tiles";
+        tileSize = [256, 256];
+        matrixSet = "w"
+
+        let projection = ol.proj.get(proj);
         let projectionExtent = projection.getExtent();
         let size = ol.extent.getWidth(projectionExtent) / 256;
-        let resolutions = [];
-        for (let z = 2; z < 19; ++z) {
+        let resolutions = new Array(level);
+        let matrixIds = new Array(level);
+        for (let z = 0; z < level; z++) {
             resolutions[z] = size / Math.pow(2, z);
+            matrixIds[z] = z;
         }
-        let map = new ol.Map({
-            layers: [
-                new ol.layer.Tile({
-                    source: new ol.source.WMTS({
-                        name: "中国矢量1-4级",
-                        url: "http://t{0-6}.tianditu.com/vec_c/wmts?tk=21c1e34286caecc25fd94be94bfbe119",
-                        layer: "vec",
-                        style: "default",
-                        matrixSet: "c",
-                        format: "tiles",
-                        wrapX: true,
-                        tileGrid: new ol.tilegrid.WMTS({
-                            origin: ol.extent.getTopLeft(projectionExtent),
-                            //resolutions: res.slice(0, 15),
-                            resolutions: resolutions,
-                            matrixIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-                        })
-                    }),
+        let TDTMap = new ol.layer.Tile({
+            source: new ol.source.WMTS({
+                url: url,
+                layer: layerName,
+                matrixSet: matrixSet,
+                format: format,
+                projection: projection,
+                tileGrid: new ol.tilegrid.WMTS({
+                    origin: ol.extent.getTopLeft(projectionExtent),
+                    resolutions: resolutions,
+                    matrixIds: matrixIds,
+                    tileSize: tileSize,
                 }),
-                new ol.layer.Tile({
-                    source: new ol.source.WMTS({
-                        name: "中国矢量注记1-4级",
-                        url: "http://t{0-6}.tianditu.com/cva_c/wmts?tk=21c1e34286caecc25fd94be94bfbe119",
-                        layer: "cva",
-                        style: "default",
-                        matrixSet: "c",
-                        format: "tiles",
-                        wrapX: true,
-                        tileGrid: new ol.tilegrid.WMTS({
-                            origin: ol.extent.getTopLeft(projectionExtent),
-                            resolutions: resolutions,
-                            matrixIds: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
-                        })
-                    }),
-                })
-
-            ],
+                zIndex: 1,
+            }),
+        });
+        let map = new ol.Map({
+            layers: [TDTMap],
             target: "map",
             view: new ol.View({
                 center: ol.proj.fromLonLat([116.39392, 39.916927]),

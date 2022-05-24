@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 800px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+  <script src="js/ol/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([116.39392, 39.916927]),
+        zoom: 12,
+      }),
+    });
+    const vectorLayer = new ol.layer.Vector({
+      source: new ol.source.Vector({
+        format: new ol.format.GeoJSON(),
+        url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3APoint&maxFeatures=500&outputFormat=application%2Fjson",
+      }),
+      style: new ol.style.Style({
+        image: new ol.style.Circle({
+          radius: 5,
+          fill: new ol.style.Fill({
+            color: 'yellow'
+          }),
+          stroke: new ol.style.Stroke({
+            color: 'blue',
+            width: 1
+          })
+        }),
+      }),
+    });
+    map.addLayer(vectorLayer);
+    /**
+     * 地图点击事件2获取要素
+    */
+    let selectClick = new ol.interaction.Select();
+    map.addInteraction(selectClick);
+    selectClick.on('select', (e) => {
+      let features = e.target.getFeatures().getArray();
+      if (features.length > 0) {;
+        let pt_style = (_feature) => {
+          return new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: 5,
+              fill: new ol.style.Fill({
+                color: 'red'
+              }),
+              stroke: new ol.style.Stroke({
+                color: 'black',
+                width: 1
+              })
+            }),
+            text: new ol.style.Text({
+              textAlign: 'center',
+              offsetX: '8',
+              offsetY: '8',
+              font: '13px Microsoft YaHei',
+              text: _feature.get('NAME'),
+              fill: new ol.style.Fill({
+                color: 'red'
+              }),
+              stroke: new ol.style.Stroke({
+                color: 'black',
+                width: 1
+              })
+            })
+          })
+        }
+        features[0].setStyle(pt_style(features[0]));
+      }
+    })
+
+  </script>
+</body>
+
+</html>

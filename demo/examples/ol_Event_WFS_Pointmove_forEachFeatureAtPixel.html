@@ -58,6 +58,38 @@
       style: style,
     });
     map.addLayer(vectorLayer);
+    /**
+     * 鼠标移入高亮显示并鼠标样式改变
+    */
+    let hitStyle = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'black',
+        width: 2
+      }),
+      fill: new ol.style.Fill({
+        color: 'yellow'
+      }),
+    });
+    
+    let highFeature = null;
+    map.on('pointermove', (e) => {
+      let feature = map.forEachFeatureAtPixel(e.pixel, (feature) => {
+        return feature;
+      })
+      if (feature) {
+        map.getTargetElement().style.cursor = "pointer"
+        feature.setStyle(hitStyle);
+        highFeature = feature;//浅拷贝
+        //利用js的浅拷贝特性进行数据存储，鼠标移动获取的要素赋值给一个变量，
+        //并且改变选种要素的样式，当鼠标移除后利用浅拷贝的对象改变样式，间接进行要素样式的恢复
+      } else {
+        map.getTargetElement().style.cursor = "auto"
+        if (highFeature) {
+          highFeature.setStyle(style)
+        }
+      }
+    })
+
   </script>
 </body>
 

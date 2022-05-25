@@ -22,6 +22,10 @@
   <button onclick="addWFS2()">loader方式</button>
   <div id="map" class="map"></div>
   <script type="text/javascript">
+    /**
+     * WFS服务，可以通过OL进行加载，加载有简单方式、GetFeature方式（loader方式）
+     * GetFeature方式自由度更大，可以结合一些过滤条件，这样一方面可以提高加载数据的效率
+    */
     let map = new ol.Map({
       target: "map",
       layers: [
@@ -63,6 +67,7 @@
             `http://localhost:8090/geoserver/wfs?
               service=WFS&version=1.1.0&request=GetFeature&typename=ZHJY:haidian&outputFormat=application/json
               &srsname=${proj}&bbox=${extent.join(",")},${proj}`
+          //let url=`http://localhost:8090/geoserver/wfs`;//简写
           let featureRequest = new ol.format.WFS().writeGetFeature({
             srsName: "EPSG:3857", //坐标系统
             featureNS: "www.zhjy.com", //命名空间 URI

@@ -58,6 +58,47 @@
       style: style,
     });
     map.addLayer(vectorLayer);
+    /**
+     * 鼠标移入高亮显示----鼠标改变不了样式结合事件绑定
+    */
+    let hitStyle = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'black',
+        width: 2
+      }),
+      fill: new ol.style.Fill({
+        color: 'yellow'
+      }),
+    });
+    //改变要素样式
+    var select_move = new ol.interaction.Select({
+      condition: ol.events.condition.pointerMove,//设置监听事件
+      //layers:[],//筛选图层
+      style: (feature) => {
+        return new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'yellow'
+          }),
+          stroke: new ol.style.Stroke({
+            color: 'black',
+            width: 5
+          }),
+        })
+      }
+    });
+    map.addInteraction(select_move);
+    //改变鼠标样式
+    map.on("pointermove", (e) => {
+      const isHover = map.hasFeatureAtPixel(e.pixel);
+      map.getTargetElement().style.cursor = isHover ? "pointer" : "";
+    })
+    //选中回调（不推荐这么写，推荐单击select中事件绑定的同事改变样式）
+    select_move.on("select", (e) => {
+        let coordinate = e.mapBrowserEvent.coordinate; //获取选择的坐标
+        let properties = e.selected[0].getProperties(); //获取当前要素的所有属性
+        console.log("坐标：", coordinate);
+        console.log(" properties:", properties);
+      });
   </script>
 </body>
 

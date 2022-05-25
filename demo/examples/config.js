@@ -210,7 +210,7 @@ var exampleConfig = {
                 }, {
                     name: "WMS_GetFeatureInfo",
                     thumbnail: "xingkong.gif",
-                    fileName: "ol_OMS_TMS"
+                    fileName: "ol_OMS_WMS_GetFeatureInfo"
                 },
                 ]
             },
@@ -255,14 +255,27 @@ var exampleConfig = {
             "地图事件": {
                 name: "地图事件",
                 content: [{
-                    name: "单击事件方法1",
+                    name: "WFS单击事件(getFeaturesAtPixel)",
                     thumbnail: "xingkong.gif",
-                    fileName: "ol_Event_GetFeaturesAtPixel"
+                    fileName: "ol_Event_WFS_Singleclick_getFeaturesAtPixel"
                 }, {
-                    name: "单击事件方法2",
+                    name: "WFS单击事件(select)",
                     thumbnail: "xingkong.gif",
-                    fileName: "ol_Event_Select"
-                }]
+                    fileName: "ol_Event_WFS_Singleclick_Select"
+                },{
+                    name: "WFS移入移除事件（forEachFeatureAtPixel）",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Event_WFS_Pointmove_forEachFeatureAtPixel"
+                },{
+                    name: "WFS移入移除事件（select）",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Event_WFS_Pointmove_Select"
+                },{
+                    name: "WMS移入移除事件（hit）",
+                    thumbnail: "xingkong.gif",
+                    fileName: "ol_Event_WMS_Pointmove_hit"
+                },
+            ]
             },
             "地图标注": {
                 name: "地图标注",

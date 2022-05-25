@@ -52,47 +52,47 @@
     });
     map.addLayer(vectorLayer);
     /**
-     * 地图点击事件1获取要素
+     * 地图点击事件
     */
-    let clickFeature = null;
-    map.on("singleclick", (e) => {
-      let features = map.getFeaturesAtPixel(e.pixel, { hitTolerance: 1 })//hitTolerance 像素容差
-      let pt_style = (_feature) => {
-        return new ol.style.Style({
-          image: new ol.style.Circle({
-            radius: 5,
-            fill: new ol.style.Fill({
-              color: 'red'
+    let selectClick = new ol.interaction.Select();
+    map.addInteraction(selectClick);
+
+    //事件绑定式（change和selsect两个事件）
+    selectClick.on('select', (e) => {
+      let features = e.target.getFeatures().getArray();
+      if (features.length > 0) {;
+        let pt_style = (_feature) => {
+          return new ol.style.Style({
+            image: new ol.style.Circle({
+              radius: 5,
+              fill: new ol.style.Fill({
+                color: 'red'
+              }),
+              stroke: new ol.style.Stroke({
+                color: 'black',
+                width: 1
+              })
             }),
-            stroke: new ol.style.Stroke({
-              color: 'black',
-              width: 1
-            })
-          }),
-          text: new ol.style.Text({
-            textAlign: 'center',
-            offsetX: '8',
-            offsetY: '8',
-            font: '13px Microsoft YaHei',
-            text: _feature.get('NAME'),
-            fill: new ol.style.Fill({
-              color: 'red'
-            }),
-            stroke: new ol.style.Stroke({
-              color: 'black',
-              width: 1
+            text: new ol.style.Text({
+              textAlign: 'center',
+              offsetX: '8',
+              offsetY: '8',
+              font: '13px Microsoft YaHei',
+              text: _feature.get('NAME'),
+              fill: new ol.style.Fill({
+                color: 'red'
+              }),
+              stroke: new ol.style.Stroke({
+                color: 'black',
+                width: 1
+              })
             })
           })
-        })
-      }
-      if (clickFeature) {
-        clickFeature.setStyle(null);
-      }
-      if (features.length > 0) {
+        }
         features[0].setStyle(pt_style(features[0]));
-        clickFeature = features[0];
       }
     })
+
   </script>
 </body>
 

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .ol-popup {
+            position: absolute;
+            background-color: white;
+            /*滤镜-阴影*/
+            -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #cccccc;
+            bottom: 10px;
+            left: -50px;
+        }
+
+        /*.ol-popup之后之前插入的内容和样式*/
+        .ol-popup:after,
+        .ol-popup:before {
+            top: 100%;
+            border: solid transparent;
+            content: " ";
+            height: 0;
+            width: 0;
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .ol-popup:after {
+            border-top-color: white;
+            border-width: 10px;
+            left: 48px;
+            margin-left: -10px;
+        }
+
+        .ol-popup:before {
+            border-top-color: #cccccc;
+            border-width: 11px;
+            left: 48px;
+            margin-left: -11px;
+        }
+
+        .ol-popup-closer {
+            text-decoration: none;
+            position: absolute;
+            top: 2px;
+            right: 8px;
+        }
+
+        .ol-popup-closer:after {
+            content: "✖";
+        }
+
+        #popup-content {
+            font-size: 14px;
+            font-family: "微软雅黑";
+        }
+    </style>
+    <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+    <script src="js/ol/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <div id="popup" class="ol-popup">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content">
+        </div>
+    </div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 12
+            })
+        });
+        /**
+         * 添加图层
+        */
+        const vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                format: new ol.format.GeoJSON(),
+                url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3APoint&maxFeatures=50000&outputFormat=application%2Fjson",
+            }),
+            style: new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: 5,
+                    fill: new ol.style.Fill({
+                        color: 'yellow'
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: 'blue',
+                        width: 1
+                    })
+                }),
+            }),
+        });
+        map.addLayer(vectorLayer);
+        /**
+        * 鼠标状态
+        */
+        map.on('pointermove', (e) => {
+            var hit = map.hasFeatureAtPixel(e.pixel);
+            map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+        });
+        /**
+        * 实现popup的html元素
+        */
+        let container = document.getElementById('popup');
+        let content = document.getElementById('popup-content');
+        let closer = document.getElementById('popup-closer');
+        /**
+        * 在地图容器中创建一个Overlay
+        */
+        var popup = new ol.Overlay({
+            element: container,//要转换成overlay的HTML元素
+            auto: true,//当前窗口可见
+            positioning: "bottom-center",//popup放置的位置
+            stopEvent: false,//是否应该停止事件传播到地图窗口,如果false它被放置在具有由className属性指定的 CSS 类名的容器中
+            autoPanAnimation: { duration: 250 },//当Popup超出地图边界时，为了Popup全部可见，地图移动的速度
+            //className:,//css类名
+        })
+        map.addOverlay(popup);
+        /**
+        * 添加关闭按钮的单击事件（隐藏popup）
+        */
+        closer.onclick = () => {
+            popup.setPosition(undefined);
+            closer.blur();//失去焦点
+            return false;
+        }
+        /**
+        * 为map添加点击事件监听，渲染弹出popup
+        */
+        map.on('click', (e) => {
+            let feature = map.forEachFeatureAtPixel(e.pixel, (feature, layer) => {
+                return feature;
+            });
+            //点击空白处气泡框消失
+            if (feature) {
+                content.innerHTML = '';
+                addFeatrueInfo(feature);
+                popup.setPosition(e.coordinate);
+            } else {
+                popup.setPosition(undefined);
+            }
+
+        })
+        //添加要素信息
+        addFeatrueInfo = (feature) => {
+            let featureInfo = feature.getProperties();
+            let infoHtml;
+            Object.keys(featureInfo).map((key, i) => {
+                infoHtml += `<div>${key}:${featureInfo[key]}</div>`
+            })
+            content.innerHTML = infoHtml
+        }
+    </script>
+</body>
+
+</html>

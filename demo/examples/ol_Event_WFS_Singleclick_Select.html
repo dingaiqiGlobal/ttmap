@@ -11,6 +11,61 @@
       padding: 0;
       overflow: hidden;
     }
+
+    .ol-popup {
+      position: absolute;
+      background-color: white;
+      /*滤镜-阴影*/
+      -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+      filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid #cccccc;
+      bottom: 10px;
+      left: -50px;
+    }
+
+    /*.ol-popup之后之前插入的内容和样式*/
+    .ol-popup:after,
+    .ol-popup:before {
+      top: 100%;
+      border: solid transparent;
+      content: " ";
+      height: 0;
+      width: 0;
+      position: absolute;
+      pointer-events: none;
+    }
+
+    .ol-popup:after {
+      border-top-color: white;
+      border-width: 10px;
+      left: 48px;
+      margin-left: -10px;
+    }
+
+    .ol-popup:before {
+      border-top-color: #cccccc;
+      border-width: 11px;
+      left: 48px;
+      margin-left: -11px;
+    }
+
+    .ol-popup-closer {
+      text-decoration: none;
+      position: absolute;
+      top: 2px;
+      right: 8px;
+    }
+
+    .ol-popup-closer:after {
+      content: "✖";
+    }
+
+    #popup-content {
+      font-size: 14px;
+      font-family: "微软雅黑";
+    }
   </style>
   <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
   <script src="js/ol/ol.js"></script>
@@ -19,6 +74,11 @@
 
 <body>
   <div id="map" class="map"></div>
+  <div id="popup" class="ol-popup">
+    <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+    <div id="popup-content">
+    </div>
+  </div>
   <script type="text/javascript">
     let map = new ol.Map({
       target: "map",
@@ -52,16 +112,47 @@
     });
     map.addLayer(vectorLayer);
     /**
+     * 实现popup的html元素
+    */
+    let container = document.getElementById('popup');
+    let content = document.getElementById('popup-content');
+    let closer = document.getElementById('popup-closer');
+    var popup = new ol.Overlay({
+      element: container,
+      auto: true,
+      positioning: "bottom-center",
+      stopEvent: false,
+      autoPanAnimation: { duration: 250 },
+    });
+    map.addOverlay(popup);
+
+    closer.onclick = () => {
+      popup.setPosition(undefined);
+      closer.blur();//失去焦点
+      return false;
+    }
+    /**
      * 地图点击事件
     */
     let selectClick = new ol.interaction.Select();
     map.addInteraction(selectClick);
 
-    //事件绑定式（change和selsect两个事件）
+    //事件绑定式（change和select两个事件）
     selectClick.on('select', (e) => {
       let features = e.target.getFeatures().getArray();
-      if (features.length > 0) {;
-        let pt_style = (_feature) => {
+      if (features.length > 0) {
+        let feature = features[0];//选中要素
+        let property = feature.getProperties();
+        let coordinate = ol.extent.getCenter(feature.getGeometry().getExtent());
+        //气泡框内容
+        let hdms = "点名：" + property["NAME"];
+        hdms += "<br/>";
+        hdms += "位置:" + coordinate[0] + "-" + coordinate[1]
+        content.innerHTML = hdms;
+        //气泡框位置
+        popup.setPosition(coordinate);
+        //选中样式
+        let pt_style = (feature) => {
           return new ol.style.Style({
             image: new ol.style.Circle({
               radius: 5,
@@ -78,7 +169,7 @@
               offsetX: '8',
               offsetY: '8',
               font: '13px Microsoft YaHei',
-              text: _feature.get('NAME'),
+              text: feature.get('NAME'),
               fill: new ol.style.Fill({
                 color: 'red'
               }),
@@ -89,7 +180,7 @@
             })
           })
         }
-        features[0].setStyle(pt_style(features[0]));
+        feature.setStyle(pt_style(feature));
       }
     })
 

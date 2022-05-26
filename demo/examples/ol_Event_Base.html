@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+    <script src="js/ol/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <div>
+        <h2>方法概述</h2>
+        <p>1、前台：Select、Map的pixel</p>
+        <p>2、GIS_Server：WMS-getGetFeatureInfo、WFS-getFeature</p>
+        <p>3、后台：Geotools、AE</p>
+        <p>4、数据库：PostGIS、Spatialite</p>
+
+        <p>1、针对矢量数据源，openlayers中提供了select交互类方面鼠标选择。还可以通过鼠标点击坐标与map坐标对比，获取选中要素，openlayers提供了相关函数。</p>
+        <p>2、针对没有显示到地图上图层数据采用OGC标准</p>
+        <p>3、AE是arcgis的，C#阵营可以使用；geotool是开源的，java阵营比较方便，
+            首先使用正常的web框架，将点击坐标参数传到后台，用geojson或者自定义字符串；
+            后台集成了AE或者geotool之后可以通过里面的空间分析或者属性分析工具，查出要查询的要素；
+            最后使用json返回</p>
+        <p>4、这种方法与后台方法类似，县将点击坐标参数传到后台，
+            只不过没有使用的AE或者geotool来进行空间分析，
+            而是直接使用空间数据库中的空间查询sql语句来查询数据，
+            然后提交到后台，后台提交到前台显示。</p>
+    </div>
+</body>
+
+</html>

@@ -94,6 +94,14 @@ var exampleConfig = {
                     name: "视图动画",
                     thumbnail: "",
                     fileName: "ol_Control_ViewAnimation"
+                },{
+                    name: "视图Feature-要素范围",
+                    thumbnail: "",
+                    fileName: "ol_Control_View_Features_Extent"
+                },{
+                    name: "视图Feature-平移到中心",
+                    thumbnail: "",
+                    fileName: "ol_Control_View_Features_Center"
                 },
 
                 ]
@@ -137,6 +145,18 @@ var exampleConfig = {
                     name: "WMS_GetFeatureInfo",
                     thumbnail: "",
                     fileName: "ol_OMS_WMS_GetFeatureInfo"
+                },{
+                    name: "WMS_CQL_Filter",
+                    thumbnail: "",
+                    fileName: "ol_OMS_WMS_CQL_Filter"
+                },{
+                    name: "WMS_GetLegend",
+                    thumbnail: "",
+                    fileName: "ol_OMS_WMS_GetLegend"
+                },{
+                    name: "WMS_GetLegendGraphic",
+                    thumbnail: "",
+                    fileName: "ol_OMS_WMS_GetLegendGraphic"
                 },
                 ]
             },
@@ -205,7 +225,7 @@ var exampleConfig = {
                     thumbnail: "",
                     fileName: "ol_Event_WFS_Pointmove_Select"
                 },{
-                    name: "WMS移入移除事件（hit）",
+                    name: "WMS移入移除事件（hit）------",
                     thumbnail: "",
                     fileName: "ol_Event_WMS_Pointmove_hit"
                 },

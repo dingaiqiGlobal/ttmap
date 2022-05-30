@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+    <script src="js/ol/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                }),
+                new ol.layer.Vector({
+                    source: new ol.source.Vector({
+                        projection: 'EPSG:4326',
+                        url: 'http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3Abj&maxFeatures=50000&outputFormat=application%2Fjson',
+                        format: new ol.format.GeoJSON()
+                    })
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 8,
+            }),
+        });
+
+        let selectSingleClick = new ol.interaction.Select();
+        map.addInteraction(selectSingleClick);
+
+        selectSingleClick.on('select', function (e) {
+            let features = e.target.getFeatures().getArray();
+            if (features.length > 0) {
+                let feature = features[0];
+                //方法1
+                //const polygon = feature.getGeometry();
+                // map.getView().fit(polygon)
+                // map.getView().setZoom(zoom)
+
+                //方法2  
+                let coordinate = ol.extent.getCenter(feature.getGeometry().getExtent());
+                map.getView().setCenter(coordinate);
+            }
+        }.bind(this))
+    </script>
+</body>
+
+</html>

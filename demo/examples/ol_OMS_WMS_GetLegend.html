@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 800px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+  <script src="js/ol/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+  <div><img id="legend" /></div>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let view = new ol.View({
+      center: ol.proj.fromLonLat([116.39392, 39.916927]),
+      zoom: 1,
+    });
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: view,
+    });
+
+    let wmsSource = new ol.source.TileWMS({
+      url: "http://localhost:8090/geoserver/wms",
+      params: { LAYERS: "topp:states", TILED: true },
+      serverType: "geoserver",
+      crossOrigin: 'anonymous',
+    });
+    let wmsLayer = new ol.layer.Tile({
+      source: wmsSource,
+    });
+    map.addLayer(wmsLayer);
+    /**
+     * 获取图例:图例会跟随分辨率的变化而更新
+    */
+    const updateLegend = (resolution) => {
+      const graphicUrl = wmsSource.getLegendUrl(resolution);
+      const img = document.getElementById('legend');
+      img.src = graphicUrl;
+    }
+    // 初始化图例
+    const resolution = map.getView().getResolution();
+    updateLegend(resolution)
+
+    //分辨率更改时更新图例
+    map.getView().on('change:resolution',  (e)=> {
+      const resolution = e.target.getResolution();
+      updateLegend(resolution);
+    });
+  </script>
+</body>
+
+</html>

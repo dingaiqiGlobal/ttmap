@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 800px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+  <script src="js/ol/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+  <div><img id="legend" /></div>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let view = new ol.View({
+      center: ol.proj.fromLonLat([116.39392, 39.916927]),
+      zoom: 1,
+    });
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: view,
+    });
+
+    let wmsSource = new ol.source.TileWMS({
+      url: "http://localhost:8090/geoserver/wms",
+      params: { LAYERS: "topp:states", TILED: true },
+      serverType: "geoserver",
+      crossOrigin: 'anonymous',
+    });
+    let wmsLayer = new ol.layer.Tile({
+      source: wmsSource,
+    });
+    map.addLayer(wmsLayer);
+    /**
+     * 获取图例常用参数解析
+    */
+    let REQUEST = "REQUEST=GetLegendGraphic";//请求图例
+    let VERSION="VERSION=1.0.0";//版本
+    let FORMAT = "FORMAT=image/png";//输出格式
+    let WIDTH = "WIDTH=20";//宽度（间接设置图标的宽度）
+    let HEIGHT = "HEIGHT=20";//高度（间接设置图标的高度）
+    let LAYER = "LAYER=topp:states"//图层
+    //图例设置
+    //字体、字体抗锯齿、字体颜色、字体大小、背景颜色、分辨率
+    let legend_options="legend_options=fontName:Times New Roman;fontAntiAliasing:true;fontColor:0x000033;fontSize:14;bgColor:0xFFFFEE;dpi:180"
+
+    let url = `http://localhost:8090/geoserver/wms?${REQUEST}&${VERSION}&${FORMAT}&${WIDTH}&${HEIGHT}&${LAYER}&${legend_options}`
+    const img = document.getElementById('legend');
+    img.src = url;
+  </script>
+</body>
+
+</html>

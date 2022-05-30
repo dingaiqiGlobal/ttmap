@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 800px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+  <script src="js/ol/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+
+  <button onclick="upParam()">空间过滤条件</button>
+  <button onclick="upatrParam()">属性过滤条件</button>
+  <button onclick="removeupatrParam()">移除过滤</button>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let view = new ol.View({
+      center: ol.proj.fromLonLat([116.39392, 39.916927]),
+      zoom: 12,
+    });
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: view,
+    });
+
+    let wmsSource = new ol.source.TileWMS({
+      url: "http://localhost:8090/geoserver/wms",
+      params: { LAYERS: "ZHJY:Point", TILED: true },
+      serverType: "geoserver",
+      crossOrigin: 'anonymous',
+    });
+    let wmsLayer = new ol.layer.Tile({
+      source: wmsSource,
+    });
+    map.addLayer(wmsLayer);
+    /**
+     * CQL_Filter//也可作为空间查询
+     * 比较运算符的完整列表是：=，<>，>，> =，<，<=
+     * 要选择一个范围值，可以使用BETWEEN运算符：BETWEEN 1000000 AND 3000000
+     * LIKE、IN等
+     * 空间：EQUALS，DISJOINT，INTERSECTS，TOUCHES，CROSSES，WITHIN，CONTAINS，OVERLAPS，RELATE，DWITHIN，BEYOND。 
+    */
+    upParam = () => {
+      let Polygon = new ol.geom.Polygon([
+        [
+          [116.262961128, 39.956198804],
+          [116.33053782, 39.956198804],
+          [116.33053782, 39.899567632],
+          [116.262961128, 39.899567632],
+          [116.262961128, 39.956198804],
+        ]
+      ]);
+      //geometry转wkt
+      const filterPolygon= new ol.format.WKT().writeGeometry(Polygon);
+      wmsSource.updateParams({//方法：更新wms参数
+        CQL_FILTER: `INTERSECTS(the_geom,${filterPolygon})`
+      })
+    }
+    upatrParam = () => {
+      var str = "NAME ='testPoint'";
+      wmsSource.updateParams({
+        CQL_FILTER: str
+      });
+    }
+    removeupatrParam = () => {
+      wmsSource.updateParams({
+        CQL_FILTER: null
+      });
+    }
+  </script>
+</body>
+
+</html>

@@ -39,6 +39,7 @@
       url: "http://localhost:8090/geoserver/wms",
       params: { LAYERS: "ZHJY:haidian", TILED: true },
       serverType: "geoserver",
+      crossOrigin: 'anonymous',
     });
     let wmsLayer = new ol.layer.Tile({
       source: wmsSource,

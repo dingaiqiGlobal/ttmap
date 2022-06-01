@@ -138,10 +138,26 @@ var exampleConfig = {
                     thumbnail: "",
                     fileName: "ol_OMS_WFS_CQL_Filter"
                 },{
-                    name: "WFS_Transaction",
+                    name: "WFS_加载数据_writeGetFeature",
                     thumbnail: "",
-                    fileName: "ol_OMS_TMS"
-                }, {
+                    fileName: "ol_OMS_WFS_writeGetFeature"
+                },{
+                    name: "WFS_插入数据_writeTransaction",
+                    thumbnail: "",
+                    fileName: ""
+                },{
+                    name: "WFS_更新数据_writeTransaction",
+                    thumbnail: "",
+                    fileName: ""
+                },{
+                    name: "WFS_删除数据_writeTransaction",
+                    thumbnail: "",
+                    fileName: ""
+                }, 
+                
+                
+                
+                {
                     name: "WMS_GetFeatureInfo",
                     thumbnail: "",
                     fileName: "ol_OMS_WMS_GetFeatureInfo"
@@ -181,20 +197,20 @@ var exampleConfig = {
                 }
                 ]
             },
-            "几何形状": {
-                name: "几何形状",
+            "交互": {
+                name: "交互",
                 content: [{
                     name: "绘制几何图形",
                     thumbnail: "",
-                    fileName: "ol_Geometry_DrawFeatures"
+                    fileName: "ol_Interactions_DrawFeatures"
                 }, {
                     name: "样式编辑",
                     thumbnail: "",
-                    fileName: "ol_Geometry_FeaturesStyle"
+                    fileName: "ol_Interactions_FeaturesStyle"
                 }, {
                     name: "图形交互编辑",
                     thumbnail: "",
-                    fileName: "ol_Geometry_ModifyFeatures"
+                    fileName: "ol_Interactions_ModifyFeatures"
                 }
             ]
             },
@@ -243,18 +259,18 @@ var exampleConfig = {
                     fileName: "ol_Marker_Popup"
                 }]
             },
-            "其他功能": {
-                name: "其他功能",
+            "坐标系": {
+                name: "坐标系",
                 content: [{
-                    name: "test1",
+                    name: "投影变换",
                     thumbnail: "",
-                    fileName: "es6_t1"
+                    fileName: "ol_Projections_Transform_Map"
                 }, {
-                    name: "test2",
+                    name: "常用方法",
                     thumbnail: "",
-                    fileName: "es6_t1"
+                    fileName: "ol_Projections_Transform_Method"
                 }]
-            }
+            },
         }
     }
 };

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+    <script src="js/ol/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        let map = new ol.Map({
+            target: 'map',
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM()
+                })
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 12
+            })
+        });
+
+        let Polygon = new ol.geom.Polygon([
+            [
+                [116.262961128, 39.956198804],
+                [116.33053782, 39.956198804],
+                [116.33053782, 39.899567632],
+                [116.262961128, 39.899567632],
+                [116.262961128, 39.956198804],
+            ]
+        ]);
+
+        Polygon.applyTransform(ol.proj.getTransform('EPSG:4326', 'EPSG:3857'));//方法1
+        //Polygon =Polygon.transform('EPSG:4326', 'EPSG:3857');//方法2
+        //ol.proj.transform(coordinate,'EPSG:4326', 'EPSG:3857');//坐标不是geometry
+        let feature = new ol.Feature({
+            geometry: Polygon,
+            name: 'My Polygon'
+        })
+        let vectorSource = new ol.source.Vector();
+        let vectorLayer = new ol.layer.Vector();
+        vectorSource.addFeature(feature);
+        vectorLayer.setSource(vectorSource);
+        map.addLayer(vectorLayer);
+    </script>
+</body>
+
+</html>

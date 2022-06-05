@@ -144,7 +144,7 @@ var exampleConfig = {
                 },{
                     name: "WFS_插入数据_writeTransaction",
                     thumbnail: "",
-                    fileName: ""
+                    fileName: "ol_OMS_WFS_writeTransaction_inserts"
                 },{
                     name: "WFS_更新数据_writeTransaction",
                     thumbnail: "",

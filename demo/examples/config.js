@@ -94,11 +94,11 @@ var exampleConfig = {
                     name: "视图动画",
                     thumbnail: "",
                     fileName: "ol_Control_ViewAnimation"
-                },{
+                }, {
                     name: "视图Feature-要素范围",
                     thumbnail: "",
                     fileName: "ol_Control_View_Features_Extent"
-                },{
+                }, {
                     name: "视图Feature-平移到中心",
                     thumbnail: "",
                     fileName: "ol_Control_View_Features_Center"
@@ -137,39 +137,27 @@ var exampleConfig = {
                     name: "WFS_CQL_Filter",
                     thumbnail: "",
                     fileName: "ol_OMS_WFS_CQL_Filter"
-                },{
+                }, {
                     name: "WFS_加载数据_writeGetFeature",
                     thumbnail: "",
                     fileName: "ol_OMS_WFS_writeGetFeature"
-                },{
-                    name: "WFS_插入数据_writeTransaction",
+                }, {
+                    name: "WFS_Transaction",
                     thumbnail: "",
-                    fileName: "ol_OMS_WFS_writeTransaction_inserts"
-                },{
-                    name: "WFS_更新数据_writeTransaction",
-                    thumbnail: "",
-                    fileName: ""
-                },{
-                    name: "WFS_删除数据_writeTransaction",
-                    thumbnail: "",
-                    fileName: ""
-                }, 
-                
-                
-                
-                {
+                    fileName: "ol_OMS_WFS_Transaction"
+                }, {
                     name: "WMS_GetFeatureInfo",
                     thumbnail: "",
                     fileName: "ol_OMS_WMS_GetFeatureInfo"
-                },{
+                }, {
                     name: "WMS_CQL_Filter",
                     thumbnail: "",
                     fileName: "ol_OMS_WMS_CQL_Filter"
-                },{
+                }, {
                     name: "WMS_GetLegend",
                     thumbnail: "",
                     fileName: "ol_OMS_WMS_GetLegend"
-                },{
+                }, {
                     name: "WMS_GetLegendGraphic",
                     thumbnail: "",
                     fileName: "ol_OMS_WMS_GetLegendGraphic"
@@ -212,7 +200,7 @@ var exampleConfig = {
                     thumbnail: "",
                     fileName: "ol_Interactions_ModifyFeatures"
                 }
-            ]
+                ]
             },
             "地图事件": {
                 name: "地图事件",
@@ -220,11 +208,11 @@ var exampleConfig = {
                     name: "概述",
                     thumbnail: "",
                     fileName: "ol_Event_Base"
-                },{
+                }, {
                     name: "WFS单击事件(getFeaturesAtPixel)",
                     thumbnail: "",
                     fileName: "ol_Event_WFS_Singleclick_getFeaturesAtPixel"
-                },{
+                }, {
                     name: "WFS单击事件(forEachFeatureAtPixel)",
                     thumbnail: "",
                     fileName: "ol_Event_WFS_Singleclick_forEachFeatureAtPixel"
@@ -232,20 +220,20 @@ var exampleConfig = {
                     name: "WFS单击事件(select)",
                     thumbnail: "",
                     fileName: "ol_Event_WFS_Singleclick_Select"
-                },{
+                }, {
                     name: "WFS移入移除事件（forEachFeatureAtPixel）",
                     thumbnail: "",
                     fileName: "ol_Event_WFS_Pointmove_forEachFeatureAtPixel"
-                },{
+                }, {
                     name: "WFS移入移除事件（select）",
                     thumbnail: "",
                     fileName: "ol_Event_WFS_Pointmove_Select"
-                },{
+                }, {
                     name: "WMS移入移除事件（hit）------",
                     thumbnail: "",
                     fileName: "ol_Event_WMS_Pointmove_hit"
                 },
-            ]
+                ]
             },
             "地图标注": {
                 name: "地图标注",

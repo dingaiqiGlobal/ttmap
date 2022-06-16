@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <style>
+    .map {
+      width: 100%;
+      height: 800px;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+  <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+  <script src="js/ol/ol.js"></script>
+  <title>OpenLayers example</title>
+</head>
+
+<body>
+  <button id="insertButton">绘制多边形</button>
+  <button id="deleteButton">删除多边形</button>
+  <div id="map" class="map"></div>
+  <script type="text/javascript">
+    let map = new ol.Map({
+      target: "map",
+      layers: [
+        new ol.layer.Tile({
+          source: new ol.source.OSM(),
+        }),
+      ],
+      view: new ol.View({
+        center: ol.proj.fromLonLat([116.39392, 39.916927]),
+        zoom: 12,
+      }),
+    });
+
+    let vectorSource, vectorLayer;
+    /**
+     * 加载wfs服务
+     */
+    queryWfs = () => {
+      vectorSource = new ol.source.Vector();
+      let url = "http://localhost:8090/geoserver/ows"
+      let featureRequest = new ol.format.WFS().writeGetFeature({
+        srsName: "EPSG:3857", //坐标系统
+        featureNS: "www.zhjy.com", //命名空间 URI
+        featurePrefix: "ZHJY", //工作区名称
+        featureTypes: ["haidian"], //查询图层，可以是同一个工作区下多个图层，逗号隔开
+        maxFeatures: 50000, //最大访问要素
+        outputFormat: "application/json", //输出格式
+      });
+
+      fetch(url, {
+        method: "POST",
+        body: new XMLSerializer().serializeToString(featureRequest),
+      })
+        .then(function (response) {
+          return response.json();
+        })
+        .then(function (json) {
+          let features = new ol.format.GeoJSON().readFeatures(json);
+          if (features.length > 0) {
+            vectorSource.clear();
+            vectorSource.addFeatures(features);
+          }
+        })
+        .catch((err) => {
+          console.log("请求错误", err);
+        });
+
+      vectorLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: "#660099",
+            width: 2,
+          }),
+          fill: new ol.style.Fill({
+            color: "#FFFF99",
+          }),
+        }),
+      });
+      map.addLayer(vectorLayer);
+    }
+    queryWfs()
+
+    /**
+     * wfs-transaction-事务
+     */
+    let draw;
+    addInteraction = () => {
+      draw = new ol.interaction.Draw({
+        source: vectorSource,
+        type: "Polygon",
+        //freehand: true,//手绘
+      })
+      map.addInteraction(draw);
+      draw.on('drawend', (e) => {
+        map.removeInteraction(draw);//移除绘制状态，一次只绘制一个图形  
+        insertFeature(e.feature)
+      })
+    }
+    //高亮style
+    let hitStyle = new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: 'black',
+        width: 2
+      }),
+      fill: new ol.style.Fill({
+        color: 'yellow'
+      }),
+    });
+    //改变要素样式
+    let select = new ol.interaction.Select({
+      condition: ol.events.condition.click,
+      style: (feature) => {
+        return new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'yellow'
+          }),
+          stroke: new ol.style.Stroke({
+            color: 'black',
+            width: 5
+          }),
+        })
+      }
+    });
+    map.addInteraction(select);
+
+    //改变鼠标样式
+    map.on("pointermove", (e) => {
+      const isHover = map.hasFeatureAtPixel(e.pixel);
+      map.getTargetElement().style.cursor = isHover ? "pointer" : "";
+    })
+
+    //选中要素
+    let selectFeature;
+    select.on('select', (e) => {
+      let features = e.target.getFeatures().getArray();
+      if (features.length > 0) {
+        let feature = features[0];//选中要素
+        selectFeature = feature
+      }
+    })
+    //修改要素
+    let modify = new ol.interaction.Modify({
+      features: select.getFeatures()
+    })
+    map.addInteraction(modify);
+
+
+    modify.on('modifyend', () => {
+      updateFeatures(selectFeature)
+    })
+
+    //UI绑定
+    let insertButton = document.getElementById("insertButton");
+    insertButton.onclick = () => {
+      addInteraction();
+    }
+    let deleteButton = document.getElementById("deleteButton");
+    deleteButton.onclick = () => {
+      deleteFeatures(selectFeature);//服务中删除了
+    }
+
+    //
+
+    /**
+     * 事物-WFS服务的Transaction操作，对应ol中的ol.format.WFS的writeTransaction方法
+    */
+
+    //插入要素
+    insertFeature = (feature) => {
+      //方法1
+      let features = new ol.Feature({
+        //设置加入属性也可以用set方法
+        the_geom: new ol.geom.MultiPolygon([feature.getGeometry().getCoordinates()]),//多面，postgresql:geom;shp:the_geom
+        OBJECTID: "0033",
+        NAME: "test",
+      });
+
+      transaction([features], null, null)
+      //方法1
+      setTimeout(function () {//相当于刷新-重要
+        vectorSource.clear();
+        queryWfs();
+      }, 500);
+      //方法2
+      //参考：https://blog.csdn.net/xcymorningsun/article/details/84661041
+      //在加载数据的时候
+      //通过获取到geojson自己创建feature添加到source中，
+      //就需要注意了必须使用feature.setId()，给feature设置id，不然你在删除的时候id为空，删除不了。
+    }
+
+    //修改要素
+    updateFeatures = (features) => {
+      transaction(null, [features], null)
+    }
+
+    //删除要素
+    deleteFeatures = (features) => {
+      transaction(null, null, [features])
+      vectorSource.removeFeature(selectFeature);//相当于刷新-重要
+    }
+
+    //事务-序列化
+    transaction = (inserts, updates, deletes) => {
+      let WFSTSerializer = new ol.format.WFS()
+      //writeTransaction(inserts, updates, deletes, options)
+      let featObject = WFSTSerializer.writeTransaction(inserts, updates, deletes, {
+        featureType: "haidian",
+        featureNS: "www.zhjy.com",
+        srsName: "EPSG:3857"
+      })
+      //xml序列化
+      let serializer = new XMLSerializer();
+      let featString = serializer.serializeToString(featObject)
+      return fetch("http://localhost:8090/geoserver/ows", {
+        method: 'POST',
+        body: featString
+      }).then((res) => {
+        return res.json()
+      }).catch((e) => {
+        console.log('addFeature error', e)
+      })
+    }
+  </script>
+</body>
+
+</html>

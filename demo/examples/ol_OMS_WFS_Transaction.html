@@ -151,21 +151,14 @@
 
 
     modify.on('modifyend', () => {
-      updateFeatures(selectFeature)
+      selectFeature.set('NAME', 'ding')
+      selectFeature.setGeometryName("the_geom");//必须更改几何
+      updateFeatures(selectFeature);
+      setTimeout(() => {//相当于刷新-重要
+        vectorSource.clear();
+        queryWfs();
+      }, 100);
     })
-
-    //UI绑定
-    let insertButton = document.getElementById("insertButton");
-    insertButton.onclick = () => {
-      addInteraction();
-    }
-    let deleteButton = document.getElementById("deleteButton");
-    deleteButton.onclick = () => {
-      deleteFeatures(selectFeature);//服务中删除了
-    }
-
-    //
-
     /**
      * 事物-WFS服务的Transaction操作，对应ol中的ol.format.WFS的writeTransaction方法
     */
@@ -179,10 +172,10 @@
         OBJECTID: "0033",
         NAME: "test",
       });
-
       transaction([features], null, null)
+
       //方法1
-      setTimeout(function () {//相当于刷新-重要
+      setTimeout(() => {//相当于刷新-重要-定时器
         vectorSource.clear();
         queryWfs();
       }, 500);
@@ -206,6 +199,7 @@
 
     //事务-序列化
     transaction = (inserts, updates, deletes) => {
+      console.log(updates)
       let WFSTSerializer = new ol.format.WFS()
       //writeTransaction(inserts, updates, deletes, options)
       let featObject = WFSTSerializer.writeTransaction(inserts, updates, deletes, {
@@ -225,6 +219,16 @@
         console.log('addFeature error', e)
       })
     }
+    //UI绑定
+    let insertButton = document.getElementById("insertButton");
+    insertButton.onclick = () => {
+      addInteraction();
+    }
+    let deleteButton = document.getElementById("deleteButton");
+    deleteButton.onclick = () => {
+      deleteFeatures(selectFeature);//服务中删除了
+    }
+
   </script>
 </body>
 

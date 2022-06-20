@@ -242,9 +242,9 @@ var exampleConfig = {
                     thumbnail: "",
                     fileName: "ol_Marker_Popup"
                 }, {
-                    name: "test2",
+                    name: "添加图文标注",
                     thumbnail: "",
-                    fileName: "ol_Marker_Popup"
+                    fileName: "ol_Marker_PictureText"
                 }]
             },
             "坐标系": {

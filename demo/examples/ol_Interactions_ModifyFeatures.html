@@ -87,14 +87,47 @@
             })
         });
         map.addLayer(vectorPoints)
+
+        map.on("pointermove", (e) => {
+            const isHover = map.hasFeatureAtPixel(e.pixel);
+            map.getTargetElement().style.cursor = isHover ? "pointer" : "";
+        })
         /**
          * 定义修改几何图形功能控件对象
         */
-       let Modify={
-            init:()=>{
-                
+        let Modify = {
+            //箭头函数不能用于构造函数--------------
+            init: function () {
+                //添加选择交互
+                this.select = new ol.interaction.Select();
+                map.addInteraction(this.select);
+                //添加修改交互
+                this.modify = new ol.interaction.Modify({
+                    features: this.select.getFeatures(),
+                });
+                map.addInteraction(this.modify);
+                //几何图形变更事件
+                this.setEvent();
+            },
+            setEvent: function () {
+                let selectFeatures = this.select.getFeatures();
+                //添加选中要素变更事件
+                this.select.on('change:active', () => {
+                    console.log(selectFeatures)
+                })
+            },
+            setActive: function (active) {
+                //激活选择要素控件 
+                this.select.setActive(active);
+                //激活修改要素控件
+                this.modify.setActive(active);
             }
-       }
+        };
+        //初始化
+        Modify.init();
+        //激活
+        Modify.setActive(true);
+
     </script>
 </body>
 

@@ -102,6 +102,10 @@ var exampleConfig = {
                     name: "视图Feature-平移到中心",
                     thumbnail: "",
                     fileName: "ol_Control_View_Features_Center"
+                }, {
+                    name: "卷帘",
+                    thumbnail: "",
+                    fileName: "ol_Control_Roller"
                 },
 
                 ]

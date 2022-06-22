@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <style>
+        .map {
+            width: 100%;
+            height: 800px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <link rel="stylesheet" href="js/ol/ol.css" type="text/css">
+    <script src="js/ol/ol.js"></script>
+    <title>OpenLayers example</title>
+</head>
+
+<body>
+    <button onclick="attributeFilter()">属性过滤</button>
+    <div id="map" class="map"></div>
+    <script type="text/javascript">
+        //---条件运算
+        //and
+        //not
+        //like
+        //or
+
+        let map = new ol.Map({
+            target: "map",
+            layers: [
+                new ol.layer.Tile({
+                    source: new ol.source.OSM(),
+                }),
+            ],
+            view: new ol.View({
+                center: ol.proj.fromLonLat([116.39392, 39.916927]),
+                zoom: 12,
+            }),
+        });
+        const vectorLayer = new ol.layer.Vector({
+            source: new ol.source.Vector({
+                format: new ol.format.GeoJSON(),
+                url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3APoint&maxFeatures=50000&outputFormat=application%2Fjson",
+            })
+        });
+        map.addLayer(vectorLayer);
+
+        /**
+         * 属性过滤-通过属性字段中包含filter字符串过滤
+        */
+        attributeFilter = () => {
+            let vectorSource = new ol.source.Vector({
+                format: new ol.format.GeoJSON(),
+                loader: (extent, resolution, projection) => {
+                    let proj = projection.getCode();
+                    let url =
+                        `http://localhost:8090/geoserver/wfs?
+              service=WFS&version=1.1.0&request=GetFeature&typename=ZHJY:Point&outputFormat=application/json
+              &srsname=${proj}&bbox=${extent.join(",")},${proj}`
+                    let featureRequest = new ol.format.WFS().writeGetFeature({
+                        srsName: "EPSG:3857",
+                        featureNS: "www.zhjy.com",
+                        featurePrefix: "ZHJY",
+                        featureTypes: ["Point"],
+                        maxFeatures: 50000,
+                        outputFormat: "application/json",
+                        filter: new ol.format.filter.like('NAME', 'filter*')//属性过滤条件
+                        //多条件
+                        // filter:new ol.format.filter.and(
+                        //   ol.format.filter.intersects("the_geom", feature.getGeometry()),
+                        //   ol.format.filter.like('NAME', 'lo*')
+                        // ),
+                    });
+
+                    fetch(url, {
+                        method: "POST",
+                        body: new XMLSerializer().serializeToString(featureRequest),
+                    })
+                        .then(function (response) {
+                            return response.json();
+                        })
+                        .then(function (json) {
+                            var features = new ol.format.GeoJSON().readFeatures(json);
+                            if (features.length > 0) {
+                                vectorSource.clear();
+                                vectorSource.addFeatures(features);
+                            }
+                        })
+                        .catch((err) => {
+                            console.log("请求错误", err);
+                        });
+                },
+
+                strategy: ol.loadingstrategy.tile(
+                    new ol.tilegrid.createXYZ({
+                        maxZoom: 25,
+                    })
+                ),
+                projection: "EPSG4326",
+            });
+            let vectorLayer = new ol.layer.Vector({
+                source: vectorSource,
+                style: new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 5,
+                        fill: new ol.style.Fill({
+                            color: 'blue'
+                        }),
+                        stroke: new ol.style.Stroke({
+                            color: 'blue',
+                            width: 1
+                        })
+                    }),
+                }),
+            });
+            map.addLayer(vectorLayer);
+        };
+
+    </script>
+</body>
+
+</html>

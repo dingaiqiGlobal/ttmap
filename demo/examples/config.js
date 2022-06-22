@@ -263,6 +263,31 @@ var exampleConfig = {
                     fileName: "ol_Projections_Transform_Method"
                 }]
             },
+            "查询汇总": {
+                name: "查询汇总",
+                content: [{
+                    name: "点击查询",
+                    thumbnail: "",
+                    fileName: "ol_Query_Click"
+                }, {
+                    name: "filter条件查询",
+                    thumbnail: "",
+                    fileName: "ol_Query_attributeFilter"
+                }, {
+                    name: "filter空间查询",
+                    thumbnail: "",
+                    fileName: "ol_Query_spatialFilter"
+                }, {
+                    name: "Turf相交查询",
+                    thumbnail: "",
+                    fileName: "ol_Query_turfIntersect"
+                }, {
+                    name: "Turf缓冲区查询",
+                    thumbnail: "",
+                    fileName: "ol_Projections_Transform_Method"
+                }
+                ]
+            },
         }
     }
 };

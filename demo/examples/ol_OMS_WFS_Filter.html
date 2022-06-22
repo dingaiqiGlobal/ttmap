@@ -18,8 +18,9 @@
 </head>
 
 <body>
-  <button onclick="spatialFilter()">空间过滤</button>
-  <button onclick="attributeFilter()">属性过滤</button>
+  <button onclick="interaction()">绘制空间过滤</button> 绘制之后自动进行空间过滤
+  </br>
+  <button onclick="attributeFilter()">属性过滤</button> 代码中设置过滤条件
   <div id="map" class="map"></div>
   <script type="text/javascript">
     //---条件运算
@@ -56,42 +57,48 @@
         zoom: 12,
       }),
     });
-
+    const vectorLayer = new ol.layer.Vector({
+      source: new ol.source.Vector({
+        format: new ol.format.GeoJSON(),
+        url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3APoint&maxFeatures=50000&outputFormat=application%2Fjson",
+      })
+    });
+    map.addLayer(vectorLayer);
     /**
      * 绘制要素返回feature进行空间过滤
     */
-    let feature;
-    let drawSource = new ol.source.Vector();
-    let drawVector = new ol.layer.Vector({
-      source: drawSource,
-      style: new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: 'rgba(255, 255, 255, 0.2)'
-        }),
-        stroke: new ol.style.Stroke({
-          color: '#ff0000',
-          width: 2
-        }),
-        image: new ol.style.Circle({
-          radius: 7,
+    interaction = () => {
+      let drawSource = new ol.source.Vector();
+      let drawVector = new ol.layer.Vector({
+        source: drawSource,
+        style: new ol.style.Style({
           fill: new ol.style.Fill({
-            color: '#ff0000'
+            color: 'rgba(255, 255, 255, 0.2)'
+          }),
+          stroke: new ol.style.Stroke({
+            color: '#ff0000',
+            width: 2
+          }),
+          image: new ol.style.Circle({
+            radius: 7,
+            fill: new ol.style.Fill({
+              color: '#ff0000'
+            })
           })
         })
+      });
+      map.addLayer(drawVector);
+      let draw = new ol.interaction.Draw({
+        source: drawSource,
+        type: "Polygon",
       })
-    });
-    map.addLayer(drawVector);
-
-    let draw = new ol.interaction.Draw({
-      source: drawSource,
-      type: "Polygon",
-    })
-    map.addInteraction(draw);
-    draw.on('drawend', (e) => {
-      feature = e.feature;
-    })
-
-    spatialFilter = () => {
+      map.addInteraction(draw);
+      draw.on('drawend', (e) => {
+        draw.setActive(false)//绘制完失效
+        spatialFilter(e.feature);
+      })
+    }
+    spatialFilter = (feature) => {
       let vectorSource = new ol.source.Vector({
         format: new ol.format.GeoJSON(),
         loader: (extent, resolution, projection) => {
@@ -108,6 +115,7 @@
             maxFeatures: 50000,
             outputFormat: "application/json",
             filter: ol.format.filter.intersects("the_geom", feature.getGeometry())//相交查询
+            //filter: ol.format.filter.intersects("the_geom", feature.getGeometry(), 'EPSG:3857')
           });
 
           fetch(url, {
@@ -133,7 +141,7 @@
           new ol.tilegrid.createXYZ({
             maxZoom: 25,
           })
-        ), 
+        ),
         projection: "EPSG4326",
       });
       let vectorLayer = new ol.layer.Vector({
@@ -152,11 +160,10 @@
         }),
       });
       map.addLayer(vectorLayer);
-    };
-
+    }
     /**
-     * 属性过滤-通过属性字段中包含filter字符串过滤
-    */
+      * 属性过滤-通过属性字段中包含filter字符串过滤
+      */
     attributeFilter = () => {
       let vectorSource = new ol.source.Vector({
         format: new ol.format.GeoJSON(),
@@ -204,7 +211,7 @@
           new ol.tilegrid.createXYZ({
             maxZoom: 25,
           })
-        ), 
+        ),
         projection: "EPSG4326",
       });
       let vectorLayer = new ol.layer.Vector({
@@ -213,7 +220,7 @@
           image: new ol.style.Circle({
             radius: 5,
             fill: new ol.style.Fill({
-              color: 'yellow'
+              color: 'blue'
             }),
             stroke: new ol.style.Stroke({
               color: 'blue',
@@ -224,7 +231,6 @@
       });
       map.addLayer(vectorLayer);
     };
-
   </script>
 </body>
 

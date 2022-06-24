@@ -264,7 +264,7 @@ var exampleConfig = {
                 }]
             },
             "查询汇总": {
-                name: "查询汇总",
+                name: "查询汇总（前端）",
                 content: [{
                     name: "点击查询",
                     thumbnail: "",
@@ -284,7 +284,7 @@ var exampleConfig = {
                 }, {
                     name: "Turf缓冲区查询",
                     thumbnail: "",
-                    fileName: "ol_Projections_Transform_Method"
+                    fileName: "ol_Query_turfBuffer"
                 }
                 ]
             },

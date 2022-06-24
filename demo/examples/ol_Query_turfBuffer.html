@@ -19,8 +19,14 @@
 </head>
 
 <body>
-    <button onclick="interaction()">绘制工具</button>
-    <button onclick="intersect()">相交查询</button>
+    <button onclick="interaction()">绘制线</button>
+    <label>度量单位：</label>
+    <select id="units" name="units" size="1">
+        <option value="kilometers" selected=true>千米</option>
+    </select>
+    <label>半径：</label>
+    <input name="radius" id="radius" class="txt" value="1" />
+    <button id="btn" class="btn" onclick="buffer()">显示缓冲区并查询</button>
     <div id="map" class="map"></div>
     <script type="text/javascript">
         let map = new ol.Map({
@@ -39,48 +45,36 @@
             source: new ol.source.Vector({
                 format: new ol.format.GeoJSON(),
                 url: "http://localhost:8090/geoserver/ZHJY/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=ZHJY%3APoint&maxFeatures=50000&outputFormat=application%2Fjson",
-                useSpatialIndex: false,//重要
-                // featuresCollection_ 是内含要素集合的 ol.Collection 对象，除非是 source 对象的 useSpatialIndex 设置为 false，或者其 features 属性设置为 ol.Collection 的要素集合，否则 featuresCollection_ 的值将是 null。
+                useSpatialIndex: false,
             })
         });
         map.addLayer(baseLayer);
         /**
          * 坐标转换函数（扩展）
          */
-        // const Coords2TurfGeom = {
-        //     Point: function (coords) {
-        //         return turf.point(coords);
-        //     },
-        //     MultiPoint: function (coords) {
-        //         return turf.multiPoint(coords);
-        //     },
-        //     LineString: function (coords) {
-        //         return turf.lineString(coords);
-        //     },
-        //     MultiLineString: function (coords) {
-        //         return turf.multiLineString(coords);
-        //     },
-        //     Polygon: function (coords) {
-        //         return turf.polygon(coords);
-        //     },
-        //     MultiPolygon: function (coords) {
-        //         return turf.multiPolygon(coords);
-        //     },
-        // }
-        // feature2tf=(feature)=>{
-        //   const geometry = feature.getGeometry();
-        //   const type = geometry.getType();
-        //   geometry.transform("EPSG:3857", "EPSG:4326");
-        //   const coords = geometry.getCoordinates();
-        //   const tf = Coords2TurfGeom[type](coords);
-        // }
-
+        const Coords2TurfGeom = {
+            Point: function (coords) {
+                return turf.point(coords);
+            },
+            MultiPoint: function (coords) {
+                return turf.multiPoint(coords);
+            },
+            LineString: function (coords) {
+                return turf.lineString(coords);
+            },
+            MultiLineString: function (coords) {
+                return turf.multiLineString(coords);
+            },
+            Polygon: function (coords) {
+                return turf.polygon(coords);
+            },
+            MultiPolygon: function (coords) {
+                return turf.multiPolygon(coords);
+            },
+        }
         /**
          * 封装ol转turf
          */
-        // import { Collection, Feature } from 'ol'
-        // import GeoJSON from 'ol/format/GeoJSON.js'
-        // import Geometry from 'ol/geom/Geometry.js'
         ol2turf = (olData) => {
             let format = new ol.format.GeoJSON()
             if (olData instanceof ol.Feature) {
@@ -142,7 +136,7 @@
             map.addLayer(drawVector);
             let draw = new ol.interaction.Draw({
                 source: drawSource,
-                type: "Polygon",
+                type: "LineString",
             })
             map.addInteraction(draw);
             draw.on('drawend', (e) => {
@@ -150,25 +144,64 @@
                 drawFeature = e.feature;
             })
         }
+        /**
+         * 缓冲区
+         */
+        buffer = () => {
+            let radius = document.getElementById("radius").value;
+            let units = document.getElementById("units").options[document.getElementById("units").selectedIndex].value;
+            //计算前转为4326
+            const geometry = drawFeature.getGeometry();
+            const type = geometry.getType();
+            geometry.transform('EPSG:3857', 'EPSG:4326');
+            const coords = geometry.getCoordinates();
+            const tf = Coords2TurfGeom[type](coords);
+            const tbf = turf.buffer(tf, radius, {
+                units: units,
+            });
+            const obf = turf2ol(tbf);
+            obf.getGeometry().transform("EPSG:4326", "EPSG:3857");
+            geometry.transform("EPSG:4326", "EPSG:3857");//绘制线-如果不转换就不显示
+            let obfVector = new ol.layer.Vector({
+                source: new ol.source.Vector(),
+                style: new ol.style.Style({
+                    fill: new ol.style.Fill({
+                        color: 'rgba(255, 255, 255, 0.5)'
+                    }),
+                    stroke: new ol.style.Stroke({
+                        color: 'black',
+                        width: 2
+                    }),
+                    image: new ol.style.Circle({
+                        radius: 7,
+                        fill: new ol.style.Fill({
+                            color: '#ff0000'
+                        })
+                    })
+                }),
+                zIndex: 2,
+            });
+            obfVector.getSource().addFeature(obf)//单个要素
+            map.addLayer(obfVector);
+
+            intersect(obf)//查询
+        }
 
         /**
          * 相交查询-drawFeature, baselayer参数
-         * 方法1 落在(多个)多边形内的点并返回
          */
-        intersect = () => {
-            let queryFeatures = baseLayer.getSource().getFeaturesCollection();//重要
-            // featuresCollection_ 是内含要素集合的 ol.Collection 对象，除非是 source 对象的 useSpatialIndex 设置为 false，或者其 features 属性设置为 ol.Collection 的要素集合，否则 featuresCollection_ 的值将是 null。
+        intersect = (bufferPolygon) => {
+            let queryFeatures = baseLayer.getSource().getFeaturesCollection();
             let turfPoint = ol2turf(queryFeatures);
-            let turfPolygon = ol2turf(drawFeature);
-            let intersectTFeature = turf.pointsWithinPolygon(turfPoint, turfPolygon);//方法1---落在(多个)多边形内的点 
+            let turfPolygon = ol2turf(bufferPolygon);
+            let intersectTFeature = turf.pointsWithinPolygon(turfPoint, turfPolygon);
             let intersectFeature = turf2ol(intersectTFeature);
             var IntersectLayer = new ol.layer.Vector({
                 source: new ol.source.Vector()
             });
             IntersectLayer.getSource().addFeatures(intersectFeature)
 
-            // 定义相交样式-点、线、面
-            var IntersectStyle = new ol.style.Style({
+            let IntersectStyle = new ol.style.Style({
                 image: new ol.style.Circle({
                     stroke: new ol.style.Stroke({
                         color: "blue",
@@ -190,46 +223,7 @@
             IntersectLayer.setStyle(IntersectStyle);
             map.addLayer(IntersectLayer);
         }
-        /**
-         * 方法2，相交
-         */
-        // intersect = () => {
-        //     let intersectFeature = []
-        //     let queryFeatures = baseLayer.getSource().getFeatures();
-        //     for (let i = 0; i < queryFeatures.length; i++) {
-        //         let turfPoint = ol2turf(queryFeatures[i]);
-        //         let turfPolygon = ol2turf(drawFeature);
-        //         let booleanFeature = turf.booleanDisjoint(turfPoint, turfPolygon);//判断相交
-        //         if (booleanFeature === false) {
-        //             intersectFeature.push(turf2ol(turfPoint))
-        //         }
-        //     }
-        //     let IntersectLayer = new ol.layer.Vector({
-        //         source: new ol.source.Vector()
-        //     });
-        //     IntersectLayer.getSource().addFeatures(intersectFeature)
-        //     let IntersectStyle = new ol.style.Style({
-        //         image: new ol.style.Circle({
-        //             stroke: new ol.style.Stroke({
-        //                 color: "blue",
-        //                 width: 3
-        //             }),
-        //             fill: new ol.style.Fill({
-        //                 color: "rgba(202, 12, 22, 0.5)"
-        //             }),
-        //             radius: 5,
-        //         }),
-        //         stroke: new ol.style.Stroke({
-        //             color: "blue",
-        //             width: 3
-        //         }),
-        //         fill: new ol.style.Fill({
-        //             color: "rgba(202, 12, 22, 0.5)"
-        //         })
-        //     });
-        //     IntersectLayer.setStyle(IntersectStyle);
-        //     map.addLayer(IntersectLayer);
-        // }
+
     </script>
 </body>
 
